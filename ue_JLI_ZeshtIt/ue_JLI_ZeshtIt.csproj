@@ -31,11 +31,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IDOCore">
-      <HintPath>..\JLI Projects - 11142025\JLI Projects - 11142025\Referenced\IDOCore.dll</HintPath>
+    <Reference Include="CSI.App">
+      <HintPath>..\..\JL Custom Assemblies V10\Referenced\CSI.App.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.FullTrust">
+      <HintPath>..\Referenced\CSI.FullTrust.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.MG">
+      <HintPath>..\..\JL Custom Assemblies V10\Referenced\CSI.MG.dll</HintPath>
+    </Reference>
+    <Reference Include="ICP.Standard">
+      <HintPath>..\Referenced\ICP.Standard.dll</HintPath>
+    </Reference>
+    <Reference Include="IDOBase, Version=7.1.0.0, Culture=neutral, PublicKeyToken=87d3698afe01ef37, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\JL Custom Assemblies V10\Referenced\IDOBase.dll</HintPath>
+    </Reference>
+    <Reference Include="IDOCore, Version=7.1.0.0, Culture=neutral, PublicKeyToken=87d3698afe01ef37, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Referenced\IDOCore.dll</HintPath>
     </Reference>
     <Reference Include="IDOProtocol">
       <HintPath>..\JLI Projects - 11142025\JLI Projects - 11142025\Referenced\IDOProtocol.dll</HintPath>
+    </Reference>
+    <Reference Include="MGCoreExt">
+      <HintPath>..\Referenced\MGCoreExt.dll</HintPath>
+    </Reference>
+    <Reference Include="MGShared, Version=7.1.0.0, Culture=neutral, PublicKeyToken=87d3698afe01ef37, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\JL Custom Assemblies V10\Referenced\MGShared.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
