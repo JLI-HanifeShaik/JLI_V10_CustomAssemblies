@@ -1,0 +1,2 @@
+C:\Hanife\JLI V10 Custom Assemblies\ue_JLI_ZeshtIt\obj\Debug\ue_JLI_ZeshtIt.csproj.AssemblyReference.cache
+C:\Hanife\JLI V10 Custom Assemblies\ue_JLI_ZeshtIt\obj\Debug\ue_JLI_ZeshtIt.csproj.CoreCompileInputs.cache
