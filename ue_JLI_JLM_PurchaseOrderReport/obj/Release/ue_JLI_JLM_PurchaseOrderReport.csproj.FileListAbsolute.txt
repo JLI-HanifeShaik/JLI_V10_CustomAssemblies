@@ -1,0 +1,9 @@
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\bin\Release\ue_JLI_JLM_PurchaseOrderReport.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\bin\Release\ue_JLI_JLM_PurchaseOrderReport.pdb
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\obj\Release\ue_JLI_JLM_PurchaseOrderReport.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\obj\Release\ue_JLI_JLM_PurchaseOrderReport.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\obj\Release\ue_JLI_JLM_PurchaseOrderReport.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\obj\Release\ue_JLI_JLM_PurchaseOrderReport.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_PurchaseOrderReport-IDO\ue_JLI_JLM_PurchaseOrderReport\obj\Release\ue_JLI_JLM_PurchaseOrderReport.pdb

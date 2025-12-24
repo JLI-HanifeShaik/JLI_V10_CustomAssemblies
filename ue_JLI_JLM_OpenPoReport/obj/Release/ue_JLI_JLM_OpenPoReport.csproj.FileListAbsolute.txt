@@ -1,0 +1,13 @@
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\bin\Release\ue_JLI_JLM_OpenPoReport.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\bin\Release\ue_JLI_JLM_OpenPoReport.pdb
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\obj\Release\ue_JLI_JLM_OpenPoReport.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\obj\Release\ue_JLI_JLM_OpenPoReport.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\obj\Release\ue_JLI_JLM_OpenPoReport.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\obj\Release\ue_JLI_JLM_OpenPoReport.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JLM_OpenPoReport-IDO\ue_JLI_JLM_OpenPoReport\obj\Release\ue_JLI_JLM_OpenPoReport.pdb

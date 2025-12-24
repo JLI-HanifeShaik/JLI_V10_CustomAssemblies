@@ -1,0 +1,267 @@
+﻿
+Declare @Job				JobType
+	,@Suffix				SuffixType
+	,@cust_item				CustItemType
+	,@accessory				ItemType
+	,@fab_comp_item			ItemType
+	,@description			DescriptionType
+	,@req_qty				QtyPerType
+	,@avail_qty				QtyPerType
+	,@po_qty				QtyPerType
+	,@po_due_date			DateType
+	,@avail_qty_to_order	QtyPerType
+	,@avail_date			DateType
+
+	,@matl_qty_conv			QtyPerType
+	,@qty					Int
+	,@QtyOnHand				QtyPerType
+	,@firm					QtyPerType
+	,@qty_allocjob			QtyTotlType
+	,@Count					Int
+	,@Str					NVARCHAR(100);
+
+	--Test
+	--Set @Item = 'A002762XXX-BEGY00'
+	--Set @CustNum = 'C000028'
+	Set @Count = 0
+
+	Declare @tmpTbl Table(
+	 cust_num				CustNumType
+	,item					ItemType
+	,cust_item				CustItemType
+	,accessory				ItemType
+	,fab_comp_item			ItemType
+	,description			DescriptionType
+	,req_qty				QtyPerType
+	,avail_qty				QtyPerType
+	,po_due_date			DateType
+	,avail_qty_to_order		QtyPerType
+	,po_qty					QtyPerType)
+
+
+	If IsNull(@CustNum,'') <> '' And IsNull(@Item,'') <> ''
+	Begin
+		DECLARE cursor_itemcust CURSOR
+		FOR SELECT itemcust.cust_num,itemcust.item,itm.job,itm.suffix,itemcust.cust_item  
+			FROM itemcust_mst itemcust Inner Join item_mst itm On itm.item = itemcust.item
+			WHERE cust_num = @CustNum And itemcust.item = @Item And Uf_CustContractStatus = 'A'
+	End
+	Else If IsNull(@CustNum,'') = '' And IsNull(@Item,'') = ''
+	Begin
+		DECLARE cursor_itemcust CURSOR
+		FOR SELECT cust_num,itemcust.item,itm.job,itm.suffix,itemcust.cust_item 
+			FROM itemcust_mst itemcust Inner Join item_mst itm On itm.item = itemcust.item
+			WHERE SubString(itemcust.item,11,1) = '-' And Uf_CustContractStatus = 'A'
+	End
+	Else If IsNull(@CustNum,'') = ''
+	Begin
+		DECLARE cursor_itemcust CURSOR
+		FOR SELECT cust_num,itemcust.item,itm.job,itm.suffix,itemcust.cust_item 
+			FROM itemcust_mst itemcust Inner Join item_mst itm On itm.item = itemcust.item
+			WHERE itemcust.item = @Item And Uf_CustContractStatus = 'A' And SubString(itemcust.item,11,1) = '-'
+	End
+	Else If IsNull(@Item,'') = ''
+	Begin
+		DECLARE cursor_itemcust CURSOR
+		FOR SELECT cust_num,itemcust.item,itm.job,itm.suffix,itemcust.cust_item 
+			FROM itemcust_mst itemcust Inner Join item_mst itm On itm.item = itemcust.item
+			WHERE cust_num = @CustNum And SubString(itemcust.item,11,1) = '-' And Uf_CustContractStatus = 'A'
+	End
+
+	OPEN cursor_itemcust;
+	FETCH NEXT FROM cursor_itemcust INTO @CustNum,@Item,@Job,@Suffix,@cust_item
+	WHILE @@FETCH_STATUS = 0
+		BEGIN
+			----------------------------------------------
+			Set @Count = @Count + 1
+			Print @Count
+
+				DECLARE cursor_FabCompItem1 CURSOR
+				FOR 					
+					SELECT accessory,OptionItem,qty,matl_qty_conv,qty_allocjob,description,Uf_Firm
+					FROM (SELECT ia.accessory,ia.OptionItem,ia.qty,jobmatl.matl_qty_conv,qty_allocjob,itm.description,itm.Uf_Firm, 
+          						ROW_NUMBER() OVER(PARTITION BY ia.accessory order by ia.OptionItem desc ) rn 
+      					  FROM ue_JLI_ItemAccessory ia Inner Join item_mst itm On itm.item = ia.OptionItem
+																	Inner Join jobmatl_mst jobmatl On jobmatl.item = ia.OptionItem
+      					  WHERE ia.item = @Item And jobmatl.job = @Job and ia.accessory <> 'INNERLINING FABRIC' --And jobmatl.suffix = @Suffix
+						 ) a 
+					WHERE rn = 1
+				OPEN cursor_FabCompItem1;
+				FETCH NEXT FROM cursor_FabCompItem1 INTO @accessory,@fab_comp_item,@qty,@matl_qty_conv,@qty_allocjob,@description,@firm
+				WHILE @@FETCH_STATUS = 0
+					BEGIN
+						----------------------------------------------------
+						Set @po_due_date = Null
+						Set @QtyOnHand = 0
+						Select @QtyOnHand = QtyOnHand From ItemWhseQuantityView Where item = @fab_comp_item
+						Select Top 1 @po_due_date = Cast(due_date As Date),@po_qty = Sum(qty_ordered)
+						From poitem_mst 
+						Where item = @fab_comp_item And stat = 'O' And due_date >= GetDate()
+						Group By due_date
+						Order By due_date
+
+						--Set @req_qty = @matl_qty_conv * @qty 
+						Set @req_qty = @matl_qty_conv 
+						Set @avail_qty = (IsNull(@QtyOnHand,0) - (IsNull(@qty_allocjob,0)+IsNull(@firm,0)))
+						Set @avail_qty_to_order = @avail_qty / @req_qty
+
+						Insert Into @tmpTbl (cust_num				
+											,item					
+											,cust_item				
+											,accessory				
+											,fab_comp_item			
+											,description			
+											,req_qty				
+											,avail_qty				
+											,po_due_date
+											,avail_qty_to_order
+											,po_qty	)
+					Select @CustNum,@Item,@cust_item,@accessory,@fab_comp_item,@description,@req_qty,@avail_qty,@po_due_date,@avail_qty_to_order,@po_qty
+						-------------------------------------------------------
+						FETCH NEXT FROM cursor_FabCompItem1 INTO @accessory,@fab_comp_item,@qty,@matl_qty_conv,@qty_allocjob,@description,@firm
+					END;
+				CLOSE cursor_FabCompItem1;
+				DEALLOCATE cursor_FabCompItem1;
+
+
+
+				DECLARE cursor_FabCompItem2 CURSOR
+				FOR SELECT Distinct '',ic.item,jobmatl.matl_qty_conv,qty_allocjob,itm.description,itm.Uf_Firm
+					FROM ue_JLI_ItemComponents ic Inner Join item_mst itm On itm.item = ic.item
+											  Inner Join jobmatl_mst jobmatl On jobmatl.item = ic.item
+					WHERE jobmatl.job = @Job And jobmatl.suffix = @Suffix
+
+				OPEN cursor_FabCompItem2;
+				FETCH NEXT FROM cursor_FabCompItem2 INTO @accessory,@fab_comp_item,@matl_qty_conv,@qty_allocjob,@description,@firm
+				WHILE @@FETCH_STATUS = 0
+					BEGIN
+						----------------------------------------------------
+						Set @po_due_date = Null
+						Set @QtyOnHand = 0
+						Select @QtyOnHand = QtyOnHand From ItemWhseQuantityView Where item = @fab_comp_item
+						Select Top 1 @po_due_date = Cast(due_date As Date),@po_qty = Sum(qty_ordered)
+						From poitem_mst 
+						Where item = @fab_comp_item And stat = 'O' And due_date >= GetDate()
+						Group By due_date
+						Order By due_date
+
+
+						Set @req_qty = @matl_qty_conv  
+						Set @avail_qty = (IsNull(@QtyOnHand,0) - (IsNull(@qty_allocjob,0)+IsNull(@firm,0)))
+						Set @avail_qty_to_order = @avail_qty / @req_qty
+
+						Insert Into @tmpTbl (cust_num				
+											,item					
+											,cust_item				
+											,accessory				
+											,fab_comp_item			
+											,description			
+											,req_qty				
+											,avail_qty				
+											,po_due_date
+											,avail_qty_to_order
+											,po_qty)
+					Select @CustNum,@Item,@cust_item,@accessory,@fab_comp_item,@description,@req_qty,@avail_qty,@po_due_date,@avail_qty_to_order,@po_qty
+						-------------------------------------------------------
+						FETCH NEXT FROM cursor_FabCompItem2 INTO @accessory,@fab_comp_item,@matl_qty_conv,@qty_allocjob,@description,@firm
+					END;
+				CLOSE cursor_FabCompItem2;
+				DEALLOCATE cursor_FabCompItem2;
+			----------------------------------------
+			FETCH NEXT FROM cursor_itemcust INTO @CustNum,@Item,@Job,@Suffix,@cust_item
+		END;
+
+	CLOSE cursor_itemcust;
+	DEALLOCATE cursor_itemcust;
+
+
+
+	
+	Declare @tbl Table(
+	 cust_num				CustNumType	
+	,item					ItemType
+	,cust_item				CustItemType
+	,accessory				ItemType
+	,fab_comp_item			ItemType
+	,description			DescriptionType
+	,req_qty				QtyPerType
+	,avail_qty				QtyPerType
+	,po_due_date			DateType
+	,po_qty					QtyPerType	
+	,avail_qty_to_order		QtyPerType	
+	,avail_date				DateType)
+
+Insert Into @tbl( cust_num			
+					 ,item				
+					 ,cust_item			
+					 ,accessory			
+					 ,fab_comp_item		
+					 ,description		
+					 ,req_qty			
+					 ,avail_qty			
+					 ,po_due_date		
+					 ,avail_qty_to_order
+					 ,avail_date
+					 ,po_qty
+					 )
+Select tbl1.cust_num				
+	  ,tbl1.item					
+	  ,tbl1.cust_item				
+	  ,tbl1.accessory				
+	  ,tbl1.fab_comp_item			
+	  ,tbl1.description			
+	  ,tbl1.req_qty				
+	  ,tbl1.avail_qty				
+	  ,tbl1.po_due_date
+	  ,tbl1.avail_qty_to_order
+	  ,subquery.avail_date
+	  ,tbl1.po_qty
+FROM @tmpTbl tbl1
+JOIN (
+Select item,avail_date
+From(
+	Select Distinct 
+			 tbl.item 
+			,Min(avail_qty_to_order) As qty
+			--,avail_date.avail_date
+			,Case When Min(avail_qty_to_order) <= 0 Then avail_date.avail_date Else Null End avail_date
+			,ROW_NUMBER() OVER(PARTITION BY tbl.item order by IIf(Min(avail_qty_to_order) <= 0 ,avail_date.avail_date,Null) desc ) rn 
+	From @tmpTbl tbl 
+	Outer Apply (Select Min(poitem.due_date) avail_date
+					From poitem_mst poitem 
+					Where poitem.item = tbl.fab_comp_item And poitem.stat = 'O' And poitem.due_date >= GetDate()) avail_date
+	Group By tbl.item,avail_date.avail_date		
+	) a
+Where rn = 1
+) subquery
+ON tbl1.Item = subquery.Item
+
+
+
+
+
+
+
+	
+	Select cust_item,description,item,qty,Type,avail_date
+	From(
+		Select Distinct cust_item
+			   ,item.description
+			   ,tbl.item 
+			   ,Case When Min(avail_qty_to_order) <= 0 Then 0 Else 999 End As qty
+			   ,'stock' As Type
+			   ,Case When Min(avail_qty_to_order) <= 0 Then avail_date.avail_date Else GetDate() End avail_date
+			   ,ROW_NUMBER() OVER(PARTITION BY cust_item,item.description,tbl.item order by IIf(Min(avail_qty_to_order) <= 0 ,avail_date.avail_date,GetDate()) desc ) rn 
+		From @tbl tbl 
+		Inner Join item_mst item On item.item = tbl.item
+		Outer Apply (Select Min(poitem.due_date) avail_date
+					 From poitem_mst poitem 
+					 Where poitem.item = tbl.fab_comp_item And poitem.stat = 'O' And poitem.due_date >= GetDate()) avail_date
+		Group By cust_item,item.description,tbl.item,avail_date.avail_date		
+		) a
+	Where rn = 1
+	Order By cust_item,item,avail_date Desc
+
+
+
+

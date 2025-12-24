@@ -1,0 +1,10 @@
+Declare @Item           ItemType = '{0}'
+--Select @Item = 'S036730XXX-AMMS01'
+
+SELECT Accessory, OptionItem, item.description AS OptionItemDesc, Qty
+FROM ue_JLI_ItemAccessory IA
+LEFT JOIN item_mst item
+ON item.item = IA.OptionItem
+WHERE(Accessory IN('BASE FABRIC', 'NAIL HEAD', 'CONTRAST WELT')
+OR(LEFT(Accessory, 1) = 'P' AND Accessory<> 'PARTS'))
+AND IA.item = @Item

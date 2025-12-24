@@ -1,0 +1,4 @@
+C:\Hanife\JL Custom Assemblies\ue_JLI_GLPostedTransactionsExport - IDO\ue_JLI_GLPostedTransactionsExport\obj\Debug\ue_JLI_GLPostedTransactionsExport.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_GLPostedTransactionsExport - IDO\ue_JLI_GLPostedTransactionsExport\obj\Debug\ue_JLI_GLPostedTransactionsExport.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies\ue_JLI_GLPostedTransactionsExport - IDO\ue_JLI_GLPostedTransactionsExport\obj\Debug\ue_JLI_GLPostedTransactionsExport.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_GLPostedTransactionsExport - IDO\ue_JLI_GLPostedTransactionsExport\obj\Debug\ue_JLI_GLPostedTransactionsExport.csproj.CoreCompileInputs.cache

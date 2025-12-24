@@ -1,0 +1,25 @@
+SELECT 
+  ip.cust_num As CustNum
+, ip.item As Item
+, ip.fabric_grade As FabricGrade
+, price As Price
+FROM [dbo].[ue_JLI_CustItemFabricPrc] IP
+JOIN [dbo].[item_mst] IT ON IT.item = IP.item
+JOIN [dbo].[customer_mst] CU ON cu.cust_num = IP.cust_num AND cust_seq = 0
+WHERE CONVERT(date, effect_date) <= CONVERT(date, GETDATE())
+AND IT.product_code IN ('FGDL', 'FGDB', 'SSPW') AND CU.Uf_EDI850 = 0
+AND effect_date = (
+  SELECT MAX(effect_date)
+  FROM [dbo].[ue_JLI_CustItemFabricPrc] cfp
+  WHERE cfp.item = IP.item And cfp.cust_num = IP.cust_num AND IT.stat = 'A'
+)
+UNION
+SELECT 
+  SPACE(10) AS CustNum
+, ip.item As Item
+, fabric_grade As FabricGrade
+, price As Price
+FROM [dbo].[ue_JLI_ItemFabricPrc] IP
+JOIN [dbo].[item_mst] IT ON IT.item = IP.item
+WHERE IT.product_code IN ('FGDL', 'FGDB', 'SPPW') AND IT.stat = 'A'
+ORDER BY CustNum desc

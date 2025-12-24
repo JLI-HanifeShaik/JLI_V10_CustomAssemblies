@@ -1,0 +1,30 @@
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\JLI_SLItemCusts.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\JLI_SLItemCusts.pdb
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\JLI_SLItemCusts.xml
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\IDOBase.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\IDOCore.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\IDOProtocol.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\MGScriptMgr.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\MGShared.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\bin\Release\WSEnums.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.vbproj.AssemblyReference.cache
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.Resources.resources
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.vbproj.GenerateResource.cache
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.vbproj.CoreCompileInputs.cache
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.vbproj.CopyComplete
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.dll
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.xml
+C:\Hanife\JL\Task-153-Customer Lineup\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.pdb
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\bin\Release\JLI_SLItemCusts.dll
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\bin\Release\JLI_SLItemCusts.pdb
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\bin\Release\JLI_SLItemCusts.xml
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.vbproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.Resources.resources
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.vbproj.GenerateResource.cache
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.vbproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.vbproj.CopyComplete
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.dll
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.xml
+C:\Hanife\JL Custom Assembly\JLI_SLItemCusts-IDO\JLI_SLItemCusts\obj\Release\JLI_SLItemCusts.pdb

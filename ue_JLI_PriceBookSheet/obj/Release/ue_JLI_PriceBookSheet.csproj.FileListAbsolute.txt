@@ -1,0 +1,9 @@
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\bin\Release\ue_JLI_PriceBookSheet.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\bin\Release\ue_JLI_PriceBookSheet.pdb
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\obj\Release\ue_JLI_PriceBookSheet.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\obj\Release\ue_JLI_PriceBookSheet.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\obj\Release\ue_JLI_PriceBookSheet.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\obj\Release\ue_JLI_PriceBookSheet.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_PriceBookSheet-IDO\ue_JLI_PriceBookSheet\obj\Release\ue_JLI_PriceBookSheet.pdb

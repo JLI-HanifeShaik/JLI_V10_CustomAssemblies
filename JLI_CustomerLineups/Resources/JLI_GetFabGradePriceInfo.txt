@@ -1,0 +1,23 @@
+Declare
+  @CustNum		CustNumType = '{0}'
+, @Item			ItemType = '{1}'
+, @CustItemSeq	CustItemSeqType = {2}
+, @PriceBook	ListYesNoType = {3}
+
+--Select @CustNum = 'C000022',@Item = 'DB10050RLXXXX',@CustItemSeq = 1, @PriceBook = 1
+
+If IsNull(@PriceBook,'') = 1
+Begin
+	Select fabric_grade As FabricGrade,price As Price,Cast(effect_date As Date) As EffectDate
+    From (
+    Select fabric_grade,Cast(effect_date As Date) As effect_date,price,ROW_NUMBER() OVER(PARTITION BY fabric_grade 
+    Order By Cast(effect_date As Date) Desc ) rn From ue_JLI_CustItemFabricPrc 
+    Where cust_num = @CustNum And item = @Item And cust_item_seq = @CustItemSeq ) A 
+    Where rn = 1
+End
+Else
+Begin
+	SELECT fabric_grade AS FabricGrade, Price, CAST(GETDATE() AS Date) AS EffectDate
+	FROM ue_JLI_ItemFabricPrc
+	WHERE item = @Item
+End

@@ -1,0 +1,215 @@
+Declare
+ @IsGroup   ListYesNoType    = {0}
+,@SessionID Uniqueidentifier = '{1}'
+,@emp_num   EmpNumType       = '{2}'
+,@work_date DateType         = '{3}'
+,@ScanData  nvarchar(100)    = '{4}'
+
+
+
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    declare @err            int
+	       ,@EmpCount       int
+		   ,@actual_rate    decimal(9,2)
+		   ,@scan_date      datetime
+		   ,@scan_by        EmpNumType
+		   ,@item           ItemType
+		   ,@job            JobType
+		   ,@seq            int
+		   ,@ser_num        SerNumType
+		   ,@wc_name        nvarchar(25)
+		   ,@base_rate      decimal(9,2)
+		   ,@RowPointer     RowPointerType
+		   ,@delimiter      nchar(1)
+           ,@stringVal      nvarchar(100)
+           ,@pos            int
+		   ,@close_date     DateType
+		   ,@OrigScanData   nvarchar(100)
+		   ,@prev_scan_emp  EmpNumType
+		   ,@prev_scan_date nvarchar(25)
+		   
+    declare @StringValues table
+	(
+		seq         int
+	   ,stringValue nvarchar(100)
+	)
+
+	declare @EmpList table
+	(
+		emp_num        EmpNumType
+	   ,Uf_BuildingNum WhseType
+	   ,shift          ShiftType
+	   ,dept           DeptType	   
+	)
+
+	delete from @EmpList
+	delete from @StringValues
+
+	set @scan_date = getdate()
+	set @scan_by   = @emp_num
+
+	set @IsGroup   = isnull(@IsGroup,0)
+	set @emp_num   = isnull(@emp_num,'')
+	set @ScanData  = isnull(@ScanData,'')	
+	set @delimiter = '-'
+
+	if @work_date is null begin
+		select 'Invalid Work Date.  Unable to save scan data.'
+		return
+	end
+
+	/* make sure work date has not been closed - must be greater than Closed Date in custom parms */
+	select @close_date = Datefld1 from ue_JLI_CustParms where ParmId = 'PieceTickets' and ParmKey = 'CloseDate'
+	if @close_date is not null begin
+		if @work_date < @close_date begin
+			select 'Invalid Work Date.  Payroll is Closed for this Work Date.'
+			return
+		end
+	end
+
+	if @IsGroup = 1 and @SessionID is null begin
+		select 'Invalid Scan.  Group = True, but No Additional Employees Found for this session.'
+		return
+	end
+
+	----------*********************-------------------------
+	--select @EmpCount = count(*)
+	--from JLI_JPGroupScansTmp
+	--where SessionID = @SessionID
+	--set @EmpCount = isnull(@EmpCount,0)
+	----------*********************--------------------
+
+	Select @EmpCount = count(*)
+	From UserDefinedTypeValues
+	Where TypeName = 'JLI_JPGroupScans' And [Description] = @SessionID
+    set @EmpCount = isnull(@EmpCount,0)
+
+	if @IsGroup = 1 and @EmpCount <= 0 begin
+		select 'Invalid Scan.  Group = True, but No Additional Employees Found for this session.'
+		return
+	end
+
+	set @EmpCount = @EmpCount + 1
+	set @emp_num = dbo.ExpandKy(7, ltrim(rtrim(@emp_num)))
+
+	if @emp_num = '' begin
+		select 'Invalid Employee Number, unable to save scan data.'
+		return
+	end
+
+	if not exists(select top 1 * from employee_mst where emp_num = @emp_num) begin
+		select 'Invalid Employee Number, unable to save scan data.'
+		return
+	end
+
+	set @OrigScanData = @ScanData
+	/* break up @ScanData into ser_num and wc_name */
+	/* format is sernum-wcname                     */
+	set @seq = 1
+	WHILE CHARINDEX(@delimiter, @ScanData) > 0 BEGIN
+        SELECT @pos  = CHARINDEX(@delimiter, @ScanData)  
+        SELECT @stringVal = SUBSTRING(@ScanData, 1, @pos-1)
+
+        INSERT INTO @StringValues SELECT @seq, @stringVal
+		set @seq = @seq + 1
+
+        SELECT @ScanData = SUBSTRING(@ScanData, @pos+1, LEN(@ScanData)-@pos)
+    END
+	INSERT INTO @StringValues SELECT @seq, @ScanData
+
+	/* make sure Scan Data only had 2 segments, otherwise error */
+	select @seq = count(*) from @StringValues
+
+	if @seq <> 2 begin
+		select 'Invalid Ticket.  Scanned Data was not in format SerNum-JobCenter.  Unable to save scan data.'
+		return		
+	end
+
+	/* save segments into appropriate variables */
+	select @ser_num = stringValue from @StringValues where seq = 1
+	select @wc_name = stringValue from @StringValues where seq = 2
+	
+	set @ser_num = isnull(@ser_num,'')
+	set @wc_name = isnull(@wc_name,'')
+
+	if @ser_num = '' or @wc_name = '' begin
+		select 'Invalid Ticket.  Scanned Data was not in format SerNum-JobCenter.  Unable to save scan data.'
+		return
+	end
+
+	set @ser_num = dbo.ExpandKy(30, ltrim(rtrim(@ser_num)))
+
+	if not exists(select top 1 * from ue_JLI_JPTickets where ser_num = @ser_num and wc_name = @wc_name) begin
+		select 'Invalid Ticket.  Ticket does not exist.  Unable to save scan data.'
+		return
+	end
+	
+	if not exists(select top 1 * from ue_JLI_JPTickets where ser_num = @ser_num and wc_name = @wc_name and scan_date is null) begin
+		select @prev_scan_date = convert(nvarchar(25), scan_date, 101)
+		     , @prev_scan_emp  = scan_by
+	      from ue_JLI_JPTickets
+	     where ser_num = @ser_num
+		   and wc_name = @wc_name
+		set @prev_scan_date = isnull(@prev_scan_date,'')
+		set @prev_scan_emp  = isnull(@prev_scan_emp,'')
+
+		select 'Invalid Ticket.  Ticket has already been scanned by: ' + ltrim(rtrim(@prev_scan_emp)) + ' on: ' + ltrim(rtrim(@prev_scan_date)) + '. Unable to save scan data.'
+		return
+	end
+
+	select top 1
+	       @job        = job
+		  ,@seq        = seq
+		  ,@base_rate  = rate
+		  ,@item       = item
+		  ,@RowPointer = RowPointer
+      from ue_JLI_JPTickets 
+	 where ser_num = @ser_num 
+	   and wc_name = @wc_name 
+	   and scan_date is null
+	set @job       = isnull(@job,'')
+	set @seq       = isnull(@seq,0)
+	set @base_rate = isnull(@base_rate,0)
+	set @item      = isnull(@item,'')
+	
+	if @IsGroup = 1 begin
+		set @actual_rate = @base_rate / @EmpCount
+
+		Insert Into @EmpList 
+		Select employee_mst.emp_num, Uf_BuildingNum, shift, dept
+	    From UserDefinedTypeValues
+        Inner Join employee_mst 
+		On employee_mst.emp_num = UserDefinedTypeValues.value
+        Where UserDefinedTypeValues.TypeName = 'JLI_JPGroupScans' And UserDefinedTypeValues.[Description] = @SessionID
+
+
+		insert into @EmpList 
+		     select employee_mst.emp_num, Uf_BuildingNum, shift, dept
+		       from employee_mst where employee_mst.emp_num = @emp_num
+
+	end
+	else begin
+		set @actual_rate = @base_rate
+
+		insert into @EmpList 
+		     select employee_mst.emp_num, Uf_BuildingNum, shift, dept
+		       from employee_mst where employee_mst.emp_num = @emp_num
+	end
+
+	insert into ue_JLI_JPScans (type, job, ser_num, wc_name, seq, emp_num, item, scan_by, scan_date, work_date, base_rate, group_scan, actual_rate, posted, approved, raw_scan,qty,status,last_edit_user,last_edit_date, Uf_BuildingNum, shift, dept)		                  
+	     select 'P', @job,@ser_num,@wc_name,@seq,emp_num,@item,@emp_num,@scan_date,@work_date,@base_rate, @IsGroup,@actual_rate,0,0, @OrigScanData,1,'A', @emp_num, @scan_date, Uf_BuildingNum, shift, dept
+	       from @EmpList
+
+	update ue_JLI_JPTickets 
+	   set scan_by    = @emp_num
+	     , scan_date  = @scan_date 
+     where RowPointer = @RowPointer
+
+	select 'scan completed successfully'+IsNull(@wc_name,'')+'|'+Cast(IsNull(@actual_rate,0) As varchar(10))
+	return
+END
+

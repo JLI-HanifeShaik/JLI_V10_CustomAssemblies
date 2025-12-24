@@ -1,0 +1,22 @@
+SELECT 
+    LH.CustNum,
+    COUNT(DISTINCT LH.LoadNo) AS [LoadCount],
+    CAST(SUM(LI.loadqty) AS INT) AS [Pcs],
+    SUM(LI.loadqty * CI.price_conv) AS [LoadValue],
+    CA.name AS CustomerName
+FROM ue_JLI_LoadHdr LH
+JOIN ue_JLI_LoadItem LI 
+    ON LI.LoadNo = LH.LoadNo
+JOIN coitem_mst CI 
+    ON CI.co_num = LI.CO_Num 
+   AND CI.co_line = LI.CO_Line
+LEFT JOIN custaddr_mst CA 
+    ON LH.CustNum = CA.cust_num 
+   AND CA.cust_seq = 0
+WHERE LH.LoadType NOT IN ('Part', 'Mult')
+  AND CONVERT(date, LH.shippeddate) = @ShippedDate
+GROUP BY 
+    LH.CustNum,
+    CA.name
+ORDER BY 
+	CA.name

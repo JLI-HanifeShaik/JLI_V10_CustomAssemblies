@@ -1,0 +1,25 @@
+SELECT
+ip.item As Item,
+ip.cust_num As CustNum,
+ip.fabric_grade As FabricGrade,
+ip.price As Price
+FROM [dbo].[ue_JLI_CustItemFabricPrc] ip
+JOIN [dbo].[item_mst] im ON im.item = ip.item
+JOIN [dbo].[customer_mst] cu ON cu.cust_num = ip.cust_num AND cust_seq = 0
+WHERE CONVERT(date, effect_date) <= CONVERT(date, GETDATE())
+AND effect_date = (
+	SELECT MAX(effect_date)
+	FROM [dbo].[ue_JLI_CustItemFabricPrc] cfp
+	WHERE cfp.item = ip.item And cfp.cust_num = ip.cust_num
+)
+AND ip.fabric_grade IN ('Basic', 'Leather')
+UNION
+SELECT 
+ip.item As Item, 
+SPACE(10) AS CustNum, 
+fabric_grade As FabricGrade, 
+price As Price
+FROM [dbo].[ue_JLI_ItemFabricPrc] ip
+JOIN [dbo].[item_mst] im ON im.item = ip.item
+WHERE ip.fabric_grade IN ('Basic', 'Leather')
+ORDER BY item;

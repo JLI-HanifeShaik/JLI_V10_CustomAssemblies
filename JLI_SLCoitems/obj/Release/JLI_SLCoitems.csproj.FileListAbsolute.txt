@@ -1,0 +1,14 @@
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\JLI_SLCoitems.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\JLI_SLCoitems.pdb
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\MGScriptMgr.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\obj\Release\JLI_SLCoitems.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\obj\Release\JLI_SLCoitems.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\obj\Release\JLI_SLCoitems.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\obj\Release\JLI_SLCoitems.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCoitems-IDO\JLI_SLCoitems\obj\Release\JLI_SLCoitems.pdb

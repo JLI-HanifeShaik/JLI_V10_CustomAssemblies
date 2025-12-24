@@ -1,0 +1,94 @@
+Declare 
+  @CustNum						CustNumType		= '{0}'
+, @inpNewPriceBook				ListYesNoType	= '{1}'
+, @inpOldPriceBook		        ListYesNoType	= '{2}'
+, @inpNewContractOnlyCust		ListYesNoType	= '{3}'
+, @inpOldContractOnlyCust		ListYesNoType	= '{4}'
+, @inpProcessType				varchar(30)		= '{5}'
+
+Declare 
+  @CollecGroup			    Nvarchar(20)
+, @ShowCollection			ListYesNoType = 1
+
+Declare @ResultSet Table(
+  CustNum					Nvarchar(20)
+, Item						Nvarchar(30)
+, ShowCollection			ListYesNoType
+, RecordType				Nchar(1)
+, CollectionGroup			Nvarchar(30)
+)
+ 
+Set @inpNewPriceBook = IsNull(@inpNewPriceBook,0)
+Set @inpOldPriceBook = IsNull(@inpOldPriceBook,0)
+Set @inpNewContractOnlyCust = IsNull(@inpNewContractOnlyCust,0)
+Set @inpOldContractOnlyCust = IsNull(@inpOldContractOnlyCust,0)
+
+If @inpNewPriceBook = @inpOldPriceBook And @inpNewContractOnlyCust = @inpOldContractOnlyCust
+	Return
+If @inpNewPriceBook = @inpNewContractOnlyCust
+	Return
+
+If @inpProcessType = 'cusUf_PriceBook'
+Begin
+	If @inpNewPriceBook = 0
+	Begin
+		Delete From ue_JLI_AvailableCollection_mst Where cust_num = @CustNum And record_type In ('C','A')
+		Delete From ue_JLI_AvailCollecGroups_mst Where cust_num = @CustNum
+		Return
+	End
+End
+Else If @inpProcessType = 'cusUf_contract_only_cust'
+Begin
+	If @inpNewContractOnlyCust = 0
+	Begin
+		Delete From ue_JLI_AvailableCollection_mst Where cust_num = @CustNum And record_type In ('C','A')
+		Delete From ue_JLI_AvailCollecGroups_mst Where cust_num = @CustNum
+		Return
+	End
+End
+
+DECLARE Cursor_AvailCollecGroups CURSOR local static FOR
+	Select available_collec_group From ue_JLI_AvailCollecGroups_mst Where cust_num = @CustNum
+OPEN Cursor_AvailCollecGroups;
+FETCH NEXT FROM Cursor_AvailCollecGroups INTO @CollecGroup
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	----------------------------------------------------
+    If @inpNewPriceBook = 1
+        Set @ShowCollection = 1
+    Else
+        Set @ShowCollection = 0
+
+	Insert Into @ResultSet(CustNum,Item,ShowCollection,RecordType,CollectionGroup)
+	Select @CustNum
+    ,collectionID
+    ,@ShowCollection
+    ,'C'
+    ,@CollecGroup 
+    From ue_JLI_Collection 
+    Where Uf_CollectionGroup = @CollecGroup And stat = 'A' And IIF(@inpNewPriceBook = 1,Uf_PriceBook,1) = 1
+
+    If @CollecGroup = 'Accessories'
+    Begin
+	    Insert Into @ResultSet(CustNum,Item,ShowCollection,RecordType,CollectionGroup)
+	    Select @CustNum
+	    ,ICA.item
+	    ,Case When @ShowCollection = 0 Then 0 When @inpNewPriceBook = 1 And IsNull(itm.Uf_PriceBook,0) = 1 Then 1 Else 0 End
+	    ,'A'
+	    ,ICA.assort_groups 
+	    From ue_JLI_ItemCollecAccessory_mst ICA Inner Join item itm On itm.item = ICA.item
+	    Where ICA.stat = 'A' And itm.stat = 'A' And IsNull(Uf_ItemLifeCycleStatus,'E-Ready') = 'E-Ready'
+    End
+	----------------------------------------------------
+	FETCH NEXT FROM Cursor_AvailCollecGroups INTO @CollecGroup
+END
+CLOSE Cursor_AvailCollecGroups;
+DEALLOCATE Cursor_AvailCollecGroups;
+
+
+
+
+
+Insert Into ue_JLI_AvailableCollection_mst(cust_num,item,record_type,CollectionGroup,show_collection)
+Select CustNum,Item,RecordType,CollectionGroup,ShowCollection From @ResultSet
+

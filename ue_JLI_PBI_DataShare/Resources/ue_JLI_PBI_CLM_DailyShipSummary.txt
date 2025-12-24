@@ -1,0 +1,44 @@
+WITH Base AS (
+    SELECT
+        LEFT(LH.Whse, 2) AS Whse,
+        LH.LoadNo,
+        LI.loadqty,
+        LI.loadqty * CI.price_conv AS LoadValue,
+        LH.ShippedDate
+    FROM ue_JLI_LoadHdr LH
+    INNER JOIN ue_JLI_LoadItem LI ON LI.LoadNo = LH.LoadNo
+    INNER JOIN coitem_mst CI ON CI.co_num = LI.CO_Num AND CI.co_line = LI.CO_Line
+    LEFT JOIN custaddr_mst CA ON LH.CustNum = CA.cust_num AND CA.cust_seq = 0
+    WHERE LH.LoadType NOT IN ('Part', 'Mult')
+	  AND MONTH(ShippedDate) = MONTH(@ShippedDate)
+      AND YEAR(ShippedDate)  = YEAR(@ShippedDate)
+)
+-- Daily by Warehouse
+SELECT Whse,
+       COUNT(DISTINCT LoadNo)			AS [LoadCount],
+       Cast(SUM(loadqty) As Int)        AS [Pcs],
+       SUM(LoadValue)					AS [LoadValue]
+FROM Base
+WHERE CONVERT(date, ShippedDate) = @ShippedDate
+GROUP BY Whse
+
+UNION ALL
+
+-- Daily Total
+SELECT 'Total',
+       COUNT(DISTINCT LoadNo),
+       Cast(SUM(loadqty) As Int),
+       SUM(LoadValue)
+FROM Base
+WHERE CONVERT(date, ShippedDate) = @ShippedDate
+
+UNION ALL
+
+-- Monthly Total
+SELECT 'Month',
+       COUNT(DISTINCT LoadNo),
+       Cast(SUM(loadqty) As Int),
+       SUM(LoadValue)
+FROM Base
+WHERE MONTH(ShippedDate) = MONTH(@ShippedDate)
+  AND YEAR(ShippedDate)  = YEAR(@ShippedDate);

@@ -1,0 +1,10 @@
+Declare 
+  @inpCustNum					CustNumType		= '{0}'
+, @inpCollectionGroup			nvarchar(30)	= '{1}'
+
+Delete From ue_JLI_AvailableCollection_mst Where cust_num = @inpCustNum And CollectionGroup = @inpCollectionGroup And record_type = 'C'
+
+If @inpCollectionGroup = 'Accessories'
+Begin
+	Delete From ue_JLI_AvailableCollection_mst Where cust_num = @inpCustNum And record_type = 'A'
+End

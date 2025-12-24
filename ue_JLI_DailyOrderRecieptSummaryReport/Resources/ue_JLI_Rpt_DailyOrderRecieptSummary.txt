@@ -1,0 +1,88 @@
+Declare 
+  @CustNum			CustNumType		= '{0}'
+, @CurrentDate		Nvarchar(15)	= '{1}'
+
+Declare @ResultSet Table
+(
+ UbCustNum			CustNumType
+,UbCustName			NameType
+,UbCoNum 			CoNumType
+,UbCoLine 			CoLineType
+,UbCustPo 			CustPoType
+,UbOrderDate 		Nvarchar(15)
+,UbNetPrice 		Nvarchar(15)
+,UbShipTo 			Nvarchar(200)
+,UbItem 			ItemType
+,UbItemDesc 		DescriptionType
+,UbOrderQty 		Nvarchar(15)
+,UbItemPrice 		Nvarchar(15)
+,UbLTDueDate 		Nvarchar(15)
+,UbAccessoryDesc 	DescriptionType
+,UbAccessory 		ItemType
+,UbAccessoryQty 	Nvarchar(15)
+,UbOptionItem 		ItemType
+,UbOptionItemDesc 	DescriptionType
+)
+
+Declare @EDI_Customers nvarchar(300)
+Select @EDI_Customers = cp.Charfld1
+From ue_JLI_CustParms cp 
+Where cp.parmid = 'JLI_DailyOrderRecieptSummaryReport' And cp.ParmKey = 'CustomersGroup'
+
+Declare @Customers Table(cust_num CustNumType)
+If IsNull(@EDI_Customers,'') <> ''
+Begin    
+    Insert Into @Customers(cust_num)
+    SELECT Split.a.value('.', 'VARCHAR(100)') AS Code
+    FROM (SELECT CAST('<M>' + REPLACE(@EDI_Customers, ',', '</M><M>') + '</M>' AS XML) AS Data) AS A
+    CROSS APPLY Data.nodes('/M') AS Split(a);
+End
+
+Insert Into @ResultSet(UbCustNum,UbCustName,UbCoNum,UbCoLine,UbCustPo,UbOrderDate,UbNetPrice,UbShipTo,UbItem,UbItemDesc,UbOrderQty,UbItemPrice,UbLTDueDate,UbAccessoryDesc,UbAccessory,UbAccessoryQty,UbOptionItem,UbOptionItemDesc)
+Select co.cust_num As UbCustNum
+	  ,custaddr.name As UbCustName
+	  ,co.co_num As UbCoNum
+	  ,coi.co_Line As UbCoLine
+	  ,co.cust_po As UbCustPo
+	  ,Cast(co.order_date As Date) As UbOrderDate
+	  ,Cast(co.price As Decimal(12,2)) As UbNetPrice
+	  ,Concat(custaddr.name,' ',custaddr.city,' ',custaddr.state,' ',custaddr.zip) As UbShipTo 
+	  ,coi.item As UbItem
+	  ,coi.description As UbItemDesc
+	  ,coi.qty_ordered_conv As UbOrderQty
+	  ,Cast(coi.price_conv As Decimal(12,2)) As UbItemPrice
+	  ,Cast(coi.Uf_LTDueDate As Date) As UbLTDueDate
+	  ,Accessory.description As UbAccessoryDesc
+	  ,Accessory.Accessory As UbAccessory
+	  ,Cast(Accessory.qty As int) As UbAccessoryQty
+	  ,Accessory.OptionItem As UbOptionItem
+	  ,itm.description As UbOptionItemDesc 
+From co_mst co 
+Left Join custaddr_mst custaddr On custaddr.cust_num = co.cust_num And custaddr.cust_seq = co.cust_seq
+Left Join coitem_mst coi On coi.co_num = co.co_num
+Left Join ue_JLI_CoitemAccessory Accessory On Accessory.co_num = coi.co_num And Accessory.co_line = coi.co_line
+Left Join item_mst itm On itm.item = Accessory.OptionItem
+Where co.cust_num = @CustNum 
+And IIF(Exists(Select 1 From @Customers Where cust_num = @CustNum),Cast(co.CreateDate As Date),Cast(co.Uf_ProofReadDate As Date)) = @CurrentDate 
+
+
+
+Select UbCustNum
+,UbCustName
+,UbCoNum
+,UbCoLine
+,UbCustPo
+,UbOrderDate
+,FORMAT(Cast(UbNetPrice As Decimal(12,2)), 'C', 'en-US')
+,UbShipTo
+,UbItem
+,UbItemDesc
+,UbOrderQty
+,FORMAT(Cast(UbItemPrice As Decimal(12,2)), 'C', 'en-US')
+,UbLTDueDate
+,UbAccessoryDesc
+,UbAccessory
+,UbAccessoryQty
+,UbOptionItem
+,UbOptionItemDesc
+From @ResultSet Order By UbCoNum,UbCoLine

@@ -1,0 +1,14 @@
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\ue_JLI_CollectionsExt.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\ue_JLI_CollectionsExt.pdb
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\MGScriptMgr.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\MGShared.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Debug\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Debug\ue_JLI_CollectionsExt.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Debug\ue_JLI_CollectionsExt.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Debug\ue_JLI_CollectionsExt.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Debug\ue_JLI_CollectionsExt.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Debug\ue_JLI_CollectionsExt.pdb

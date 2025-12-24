@@ -1,0 +1,26 @@
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\ue_JLI_CollectionsExt.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\ue_JLI_CollectionsExt.pdb
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\MGScriptMgr.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.dll
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.pdb
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies\JLI_Collections-IDO\V10\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\bin\Release\ue_JLI_CollectionsExt.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\bin\Release\ue_JLI_CollectionsExt.pdb
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_CollectionsExt\obj\Release\ue_JLI_CollectionsExt.pdb

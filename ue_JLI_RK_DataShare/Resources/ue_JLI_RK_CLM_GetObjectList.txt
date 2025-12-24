@@ -1,0 +1,7 @@
+
+SELECT [name]
+FROM sys.objects
+WHERE type = @ObjectType
+ORDER BY name;
+
+

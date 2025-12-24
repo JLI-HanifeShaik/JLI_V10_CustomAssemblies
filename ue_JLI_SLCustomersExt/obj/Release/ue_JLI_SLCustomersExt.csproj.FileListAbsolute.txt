@@ -1,0 +1,16 @@
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\ue_JLI_SLCustomersExt.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\ue_JLI_SLCustomersExt.pdb
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\MGScriptMgr.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\obj\Release\ue_JLI_SLCustomersExt.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\obj\Release\ue_JLI_SLCustomersExt.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\obj\Release\ue_JLI_SLCustomersExt.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\obj\Release\ue_JLI_SLCustomersExt.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\obj\Release\ue_JLI_SLCustomersExt.pdb
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\obj\Release\ue_JLI_SLCustomersExt.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies\JLI_SLCustomers-IDO\V10\ue_JLI_SLCustomersExt\obj\Release\ue_JLI_SLCustomersExt.csproj.GenerateResource.cache

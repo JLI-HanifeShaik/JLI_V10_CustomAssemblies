@@ -1,0 +1,104 @@
+Declare 
+  @StartDate		DateType		= '{0}'
+, @EndDate			DateType		= '{1}'
+, @SessionID		RowPointerType	= '{2}'
+
+Declare
+ @AcctFilterFlag	ListYesNoType
+
+If Exists(Select AccountNo From ue_JLI_TmpGL_AccountFilter_mst Where SessionID = @SessionID)
+	Set @AcctFilterFlag = 1
+Else
+	Set @AcctFilterFlag = 0
+
+Select @StartDate = IsNull(@StartDate,'1-1-1990'), @EndDate = IsNull(@EndDate,'1-1-2990')
+
+Select
+ led.acct As Acct
+,led.acct_unit1 As AcctUnit1
+,led.acct_unit2 As AcctUnit2
+,led.acct_unit3 As AcctUnit3
+,led.acct_unit4 As AcctUnit4
+,dav.AnalysisAttribute01 As AnalysisAttribute01
+,dav.AnalysisAttribute02 As AnalysisAttribute02
+,dav.AnalysisAttribute03 As AnalysisAttribute03
+,dav.AnalysisAttribute04 As AnalysisAttribute04
+,dav.AnalysisAttribute05 As AnalysisAttribute05
+,dav.AnalysisAttribute06 As AnalysisAttribute06
+,dav.AnalysisAttribute07 As AnalysisAttribute07
+,dav.AnalysisAttribute08 As AnalysisAttribute08
+,dav.AnalysisAttribute09 As AnalysisAttribute09
+,dav.AnalysisAttribute10 As AnalysisAttribute10
+,dav.AnalysisAttribute11 As AnalysisAttribute11
+,dav.AnalysisAttribute12 As AnalysisAttribute12
+,dav.AnalysisAttribute13 As AnalysisAttribute13
+,dav.AnalysisAttribute14 As AnalysisAttribute14
+,dav.AnalysisAttribute15 As AnalysisAttribute15
+,led.bank_code As BankCode
+,cha.description As ChaDescription
+,led.consolidated As Consolidated
+,led.control_prefix As ControlPrefix
+,led.control_site As ControlSite
+,curr.amt_format As CurrAmtFormat
+,led.curr_code As CurrCode
+,curr.cst_prc_format As CurrCstPrcFormat
+,matltran.document_num As DocumentNum
+,led.from_id As FromId
+,led.from_site As FromSite
+,led.hierarchy As Hierarchy
+,led.ref As Ref
+,led.ref_control_prefix As RefControlPrefix
+,led.ref_control_site As RefControlSite
+,led.ref_type As RefType
+,led.RowPointer As RowPointer
+,led.site As Site
+,cnl.ChVouNum As UbCHGLVouNum
+,led.vend_num As VendNum
+,jh.vend_num_source As VendNumSource
+,led.voucher As Voucher
+,jh.type As JhType
+,led.check_date As CheckDate
+,led.trans_date As TransDate
+,led.control_number As ControlNumber
+,led.dom_amount As DomAmount
+,led.d_trans_num As DTransNum
+,led.exch_rate As ExchRate
+,led.for_amount As ForAmount
+,led.journal_batch_id As JournalBatchId
+,led.matl_trans_num As MatlTransNum
+,led.ref_control_number As RefControlNumber
+,led.trans_num As TransNum
+,led.proj_trans_num As ProjTransNum
+,led.check_num As CheckNum
+,cnl.LineNum As UbCHLineNum
+,led.vouch_seq As VouchSeq
+,led.control_year As ControlYear
+,led.ref_control_year As RefControlYear
+,led.control_period As ControlPeriod
+,led.processed As Processed
+,led.ref_control_period As RefControlPeriod
+,cnl.Rubric As UbCHRubric
+,led.cancellation As Cancellation
+,par.enable_cancellation_posting As EnableCancellationPosting
+
+From ledger	led	Left Outer Join chart cha On cha.acct = led.acct
+Left Outer Join CN_LedgerView cnl On cnl.trans_num = led.trans_num
+Left Outer Join currency curr On curr.curr_code = led.curr_code
+Left Outer Join dim_attr_value dav 	On dav.SubscriberObjectRowPointer = led.RowPointer
+Left Outer Join jour_hdr jh	On jh.id = led.from_id
+Left Outer Join matltran matltran On matltran.trans_num = led.matl_trans_num
+Left Outer Join parms par On parm_key = 0
+WHERE led.trans_date BETWEEN @StartDate AND @EndDate
+AND (
+    @AcctFilterFlag = 0
+    OR led.acct IN (
+        SELECT AccountNo
+        FROM ue_JLI_TmpGL_AccountFilter_mst
+        WHERE SessionID = @SessionID
+    )
+)
+
+
+
+
+

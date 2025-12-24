@@ -1,0 +1,168 @@
+Declare
+     @IsGroup		ListYesNoType		= '{0}'
+	,@SessionID		Uniqueidentifier	= '{1}'
+	,@emp_num		EmpNumType			= '{2}'
+	,@work_date		DateType			= '{3}'
+	,@TimeType		nchar(10)			= '{4}'
+	,@TimeQty		int					= {5}
+	,@TimeDesc		nvarchar(100)		= '{6}'
+
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    declare @err         int
+	       ,@EmpCount    int
+		   ,@actual_rate decimal(9,2)
+		   ,@scan_date   datetime
+		   ,@scan_by     EmpNumType
+		   ,@item        ItemType
+		   ,@job         JobType
+		   ,@seq         int
+		   ,@ser_num     SerNumType
+		   ,@wc_name     nvarchar(25)
+		   ,@base_rate   decimal(9,2)
+		   ,@RowPointer  RowPointerType
+		   ,@delimiter   nchar(1)
+           ,@stringVal   nvarchar(100)
+           ,@pos         int
+		   ,@close_date  DateType
+		   ,@rate_mult   decimal(5,2)
+		   
+    declare @StringValues table
+	(
+		seq         int
+	   ,stringValue nvarchar(100)
+	)
+
+	declare @EmpList table
+	(
+		emp_num        EmpNumType
+	   ,base_rate      decimal(9,2)
+	   ,actual_rate    decimal(9,2)
+	   ,Uf_BuildingNum WhseType
+	   ,shift          ShiftType
+	   ,dept           DeptType	   
+	)
+
+	delete from @EmpList
+	delete from @StringValues
+
+	set @scan_date = getdate()
+	set @scan_by   = @emp_num
+
+	set @IsGroup   = isnull(@IsGroup,0)
+	set @emp_num   = isnull(@emp_num,'')
+	set @TimeType  = isnull(@TimeType,'')
+	set @TimeQty   = isnull(@TimeQty,0)
+	set @TimeDesc  = isnull(@TimeDesc,'')
+	set @delimiter = '-'
+
+	if @work_date is null begin
+		select 'Invalid Work Date.  Unable to save data.'
+		return
+	end
+
+	if @TimeDesc = '' begin
+		select 'Invalid Description, cannot be blank.  Unable to save data.'
+		return
+	end
+
+	if @TimeQty <= 0 begin
+		select 'Invalid Qty, must be greater than zero.  Unable to save data.'
+		return
+	end
+
+	if @TimeType = '' begin
+		select 'Invalid Type, must 15M, 30M, 45M, or 60M.  Unable to save data.'
+		return
+	end
+
+	/* make sure work date has not been closed - must be greater than Closed Date in custom parms */
+	select @close_date = Datefld1 from ue_JLI_CustParms where ParmId = 'PieceTickets' and ParmKey = 'CloseDate'
+	if @close_date is not null begin
+		if @work_date < @close_date begin
+			select 'Invalid Work Date.  Payroll is Closed for this Work Date.'
+			return
+		end
+	end
+
+	if @IsGroup = 1 and @SessionID is null begin
+		select 'Invalid Scan.  Group = True, but No Additional Employees Found for this session.'
+		return
+	end
+
+	Select @EmpCount = count(*)
+	From UserDefinedTypeValues
+	Where TypeName = 'JLI_JPGroupScans' And [Description] = @SessionID
+    set @EmpCount = isnull(@EmpCount,0)	
+
+
+	if @IsGroup = 1 and @EmpCount <= 0 begin
+		select 'Invalid Scan.  Group = True, but No Additional Employees Found for this session.'
+		return
+	end
+
+	set @EmpCount = @EmpCount + 1
+
+	set @emp_num = dbo.ExpandKy(7, ltrim(rtrim(@emp_num)))
+
+	if @emp_num = '' begin
+		select 'Invalid Employee Number, unable to save scan data.'
+		return
+	end
+
+	if not exists(select top 1 * from employee_mst where emp_num = @emp_num) begin
+		select 'Invalid Employee Number, unable to save scan data.'
+		return
+	end
+	
+	if @IsGroup = 1 begin	
+
+		Insert Into @EmpList (emp_num, base_rate, actual_rate, Uf_BuildingNum, shift, dept)
+		select employee_mst.emp_num, 0, 0, Uf_BuildingNum, shift, dept
+	    From UserDefinedTypeValues
+        Inner Join employee_mst 
+		On employee_mst.emp_num = UserDefinedTypeValues.value
+        Where UserDefinedTypeValues.TypeName = 'JLI_JPGroupScans' And UserDefinedTypeValues.[Description] = @SessionID
+
+
+		insert into @EmpList
+		select employee_mst.emp_num, 0, 0, Uf_BuildingNum, shift, dept
+		  from employee_mst where employee_mst.emp_num = @emp_num				 
+	end
+	else begin
+		insert into @EmpList
+		select employee_mst.emp_num, 0, 0, Uf_BuildingNum, shift, dept
+		  from employee_mst where employee_mst.emp_num = @emp_num				 
+	end
+
+	if @TimeType = '15M' begin
+		set @rate_mult = .25
+	end
+	else if @TimeType = '30M' begin
+		set @rate_mult = .5
+	end
+	else if @TimeType = '45M' begin
+		set @rate_mult = .75
+	end
+	else begin
+		set @rate_mult = 1
+	end
+
+	update L
+	   set L.base_rate   = E.reg_rate * @rate_mult
+	     , L.actual_rate = (E.reg_rate * @rate_mult) / @EmpCount
+      from  @EmpList L
+inner join employee_mst E on E.emp_num = L.emp_num
+
+	insert into ue_JLI_JPScans (type, emp_num, scan_by, scan_date, work_date, base_rate, group_scan, actual_rate, posted, approved, time_qty, time_type, time_desc, status,last_edit_user,last_edit_date, Uf_BuildingNum, shift, dept)
+	     select 'T', emp_num,@emp_num,@scan_date,@work_date,base_rate, @IsGroup,actual_rate,0,0, @TimeQty, @TimeType, @TimeDesc, 'P', @emp_num, @scan_date, Uf_BuildingNum, shift, dept
+	       from @EmpList
+
+
+
+	select 'record saved successfully.'
+	return
+END

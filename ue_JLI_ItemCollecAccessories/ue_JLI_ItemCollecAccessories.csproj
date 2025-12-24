@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{475EE8D1-4282-465E-82A3-480FCD9264EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ue_JLI_ItemCollecAccessories</RootNamespace>
+    <AssemblyName>ue_JLI_ItemCollecAccessories</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="IDOBase">
+      <HintPath>..\..\..\DLLs-20251009\IDOBase.dll</HintPath>
+    </Reference>
+    <Reference Include="IDOCore">
+      <HintPath>..\..\..\DLLs-20251009\IDOCore.dll</HintPath>
+    </Reference>
+    <Reference Include="IDOProtocol">
+      <HintPath>..\..\..\DLLs-20251009\IDOProtocol.dll</HintPath>
+    </Reference>
+    <Reference Include="IDORequestClient">
+      <HintPath>..\..\..\DLLs-20251009\IDORequestClient.dll</HintPath>
+    </Reference>
+    <Reference Include="MGCommonCtrl">
+      <HintPath>..\..\..\DLLs-20251009\MGCommonCtrl.dll</HintPath>
+    </Reference>
+    <Reference Include="MGConfig">
+      <HintPath>..\..\..\DLLs-20251009\MGConfig.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="MGCoreExt">
+      <HintPath>..\..\..\DLLs-20251009\MGCoreExt.dll</HintPath>
+    </Reference>
+    <Reference Include="MGForms">
+      <HintPath>..\..\..\DLLs-20251009\MGForms.dll</HintPath>
+    </Reference>
+    <Reference Include="MGScriptMgr">
+      <HintPath>..\..\..\DLLs-20251009\MGScriptMgr.dll</HintPath>
+    </Reference>
+    <Reference Include="MGShared">
+      <HintPath>..\..\..\DLLs-20251009\MGShared.dll</HintPath>
+    </Reference>
+    <Reference Include="MGSharedResources">
+      <HintPath>..\..\..\DLLs-20251009\MGSharedResources.dll</HintPath>
+    </Reference>
+    <Reference Include="Mongoose.Interop.IDO">
+      <HintPath>..\..\..\DLLs-20251009\Mongoose.Interop.IDO.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\DLLs-20251009\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WSEnums">
+      <HintPath>..\..\..\DLLs-20251009\WSEnums.dll</HintPath>
+    </Reference>
+    <Reference Include="WSFormServerProtocol">
+      <HintPath>..\..\..\DLLs-20251009\WSFormServerProtocol.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ue_JLI_ItemCollecAccessories.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ue_JLI_AvailCollDataInsertAndDelete.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ue_JLI_AvailCollDataDelete.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,1 @@
+Delete From ue_JLI_AvailableCollection_mst Where record_type = 'A' And item = '{0}'

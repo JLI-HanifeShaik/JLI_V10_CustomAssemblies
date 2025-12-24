@@ -1,0 +1,143 @@
+
+--=============================================================================
+--=																			===
+--=				Submit BGTask												===
+--=																			===
+--=============================================================================
+
+Declare 
+  @Date					Nvarchar(15) = '{0}'
+, @CustNum			    CustNumType  = '{1}'
+, @UserName				UsernameType = '{2}'
+
+
+
+DECLARE @CustExists         Int	  
+	  , @DocProfileExists   Int	  
+      , @Name               NameType
+
+DECLARE @severity           Int	  
+      , @taskName           BGTaskNameType	= 'ue_JLI_DailyOrderRecieptSummaryReport'
+	  , @requestingUser     UsernameType	= @UserName	
+	  , @taskParms1         BGTaskParmsType
+	  , @taskParms2         BGTaskParmsType
+	  , @profileValues      NCHAR(255)
+	  , @taskId             TokenType
+	  , @infobar            InfobarType
+
+DECLARE @ToEmails				nvarchar(1000) = NULL
+      , @Subject				nvarchar(200)
+      , @MailMsg				nvarchar(Max)
+      , @xml                    varchar(max)      
+      , @Attachments            varchar(1000)
+
+ 
+Declare @EDI_Customers	nvarchar(300)
+Declare @TestMails		nvarchar(1000)
+Declare @Test			ListYesNoType
+Select @EDI_Customers = cp.Charfld1, @Test = cp.Logifld1, @TestMails = cp.Charfld2
+From ue_JLI_CustParms cp 
+Where cp.parmid = 'JLI_DailyOrderRecieptSummaryReport' And cp.ParmKey = 'CustomersGroup'
+
+Declare @Customers Table(cust_num CustNumType)
+If IsNull(@EDI_Customers,'') <> ''
+Begin    
+    Insert Into @Customers(cust_num)
+    SELECT Split.a.value('.', 'VARCHAR(100)') AS Code
+    FROM ( SELECT CAST('<M>' + REPLACE(@EDI_Customers, ',', '</M><M>') + '</M>' AS XML) AS Data ) AS A
+    CROSS APPLY Data.nodes('/M') AS Split(a);
+End
+
+If IsNull(@CustNum,'') = ''
+Begin
+DECLARE cursor_CustNum CURSOR FOR 
+	SELECT cust_num,name FROM custaddr_mst Where cust_seq = 0 
+End
+Else
+Begin
+DECLARE cursor_CustNum CURSOR FOR 
+	SELECT cust_num,name FROM custaddr_mst Where cust_seq = 0 And cust_num = @CustNum
+End
+
+OPEN cursor_CustNum;
+FETCH NEXT FROM cursor_CustNum INTO @CustNum,@Name 
+WHILE @@FETCH_STATUS = 0
+    BEGIN
+        --===============================================
+		Set @taskParms1 = Concat('SETVARVALUES(JLI_vCustNum=',@CustNum,',JLI_vDate=',@Date,')')
+
+		Select @CustExists = Count(1)
+        From co_mst co 
+        Outer Apply(Select 1 CustExists From @Customers Where cust_num = @CustNum) CustExists
+        Where co.cust_num = @CustNum
+        And IIF(CustExists = 1,Cast(co.CreateDate As Date),Cast(co.Uf_ProofReadDate As Date)) = @Date
+
+
+		Select @ToEmails = STUFF(( Select ';'+Destination
+								   From DocProfileCustomer_mst 
+								   Where RptName ='Order Verification Report' 
+								   And active = 1
+								   And CustNum = @CustNum
+								   FOR XML PATH('')), 1, 1, '')
+
+        If IsNull(@CustExists,0) > 0 And IsNull(@ToEmails,'') <> ''
+        Begin
+		    EXEC @severity = dbo.BGTaskSubmitSp
+				    @TaskName             = @taskName
+			    , @TaskParms1           = @taskParms1
+			    , @TaskParms2           = @taskParms2
+			    , @Infobar              = @infobar        OUTPUT
+			    , @TaskID               = @taskId         OUTPUT
+			    , @TaskStatusCode       = 'READY'
+			    , @StringTable          = @profileValues
+			    , @RequestingUser       = @requestingUser
+
+			Update co Set co.Uf_receipt_date = REPLACE(REPLACE(@Date,'-',''),'/','')
+			From co_mst co 
+			Outer Apply(Select 1 CustExists From @Customers Where cust_num = @CustNum) CustExists
+			Where co.cust_num = @CustNum
+			And IIF(CustExists = 1,Cast(co.CreateDate As Date),Cast(co.Uf_ProofReadDate As Date)) = @Date
+
+            SET @xml = CAST((Select co.cust_po AS 'td',''
+							                       ,co.co_num AS 'td',''
+							                       ,FORMAT(co.Uf_OrigRcvDate, 'MM-dd-yyyy') AS 'td',''
+						                     From co_mst co 
+						                     Outer Apply(Select 1 CustExists From @Customers Where cust_num = @CustNum) CustExists
+						                     Where co.cust_num = @CustNum
+						                     And IIF(CustExists = 1,Cast(co.CreateDate As Date),Cast(co.Uf_ProofReadDate As Date)) = @Date
+						                     FOR XML PATH('tr'), ELEMENTS ) AS NVARCHAR(MAX))
+	
+	        set @Subject = 'Daily Order RECIEPT Summary : ' +@Date+' '+@CustNum + ' ' + @Name
+
+	        Set @MailMsg = @Name + '<br><br> <table border=1 width=auto height=auto>
+	                  <tr style=""background-color: #f2f2f2; font-weight: bold; text-align: center; height: 50px;"">
+			                       <th colspan=3>Order Receipt Summary for '+@Date+' </th>
+			                    </tr>
+			                    <tr>
+			                       <th>Purchase Order</th>
+			                       <th>Sales Orders(s)</th>
+			                       <th>Order Received Date</th>
+			                    </tr>'+@xml+'
+	                    </table>'
+
+            --**Task must run w/ Ready and not Delayed-Waiting when putting into Emails.
+            if isnull(@taskId , 0) <> 0 begin 
+				If IsNull(@Test,0) = 0
+					Set @ToEmails = @ToEmails + ';Karina.Rodriguez@jonathanlouis.net'
+				Else
+					Set @ToEmails = @TestMails
+	            --Create EmailQueue for Report Email Addresses.
+ 	            Insert Into ue_JLI_EmailQueue (EmailDoc,email_sub,email_body,email_to,submitted_by,TaskNumber,body_format)
+	            Values(1,@Subject,@MailMsg,@ToEmails,@requestingUser,@taskId,'HTML')
+
+            end --BGTaskId
+
+
+
+        End
+		--===============================================
+        FETCH NEXT FROM cursor_CustNum INTO @CustNum,@Name 
+    END;
+CLOSE cursor_CustNum;
+DEALLOCATE cursor_CustNum;
+--==============================================================================

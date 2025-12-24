@@ -1,0 +1,58 @@
+Declare 
+  @Item								ItemType	= '{0}'
+, @PropertyName						varchar(30) = '{1}'
+, @ReasonDate						datetime	= '{2}'
+, @inpNewStatus						nchar(1)	= '{3}'
+, @inpOldStatus						nchar(1)	= '{4}'
+, @inpNewItemLifeCycleStatus		varchar(30)	= '{5}'
+, @inpOldItemLifeCycleStatus		varchar(30)	= '{6}'
+
+Select @ReasonDate = Null
+
+Declare @DroppedDate		DateType
+Select @DroppedDate = IsNull(@ReasonDate,GETDATE())
+
+Declare @ResultSet Table(
+ Item					ItemType
+,Status					nchar(1)
+,DroppedDate			varchar(15)
+)
+
+If @PropertyName = 'Stat'
+Begin
+	Print 1
+End
+Else If @PropertyName = 'itmUf_ItemLifeCycleStatus'
+Begin
+	If @inpNewItemLifeCycleStatus = @inpOldItemLifeCycleStatus
+		Return
+
+	Declare @TotalItemsCount	Int 
+	, @TotalActieItemsCount		Int 
+	, @CollecStatus				nchar(1) 
+
+	Select @TotalItemsCount = Count(1) From ue_JLI_ItemCollection Where collectionID = Left(@Item,5)
+
+	Select @TotalActieItemsCount = Count(1) 
+	From ue_JLI_ItemCollection IC Inner Join item_mst item 
+	On IC.item = item.item And item.stat = 'A' And IsNull(item.Uf_ItemLifeCycleStatus,'E-Ready') = 'E-Ready'
+	Where collectionID = Left(@Item,5) And IC.item <> @Item
+
+	If IsNull(@inpNewItemLifeCycleStatus,'E-Ready') = 'E-Ready'
+		Set TotalActieItemsCount = TotalActieItemsCount + 1
+
+	If @TotalItemsCount = @TotalActieItemsCount
+		Select @CollecStatus = 'A'
+	Else
+		Select @CollecStatus = 'D'
+
+	Select @DroppedDate = IIF(@CollecStatus = 'D',@DroppedDate,Null)
+
+	Insert Into @ResultSet(Item,Status,DroppedDate)
+	Select Left(@Item,5),@CollecStatus,@DroppedDate
+
+End
+
+
+Select Item,Status,DroppedDate From @ResultSet
+

@@ -1,0 +1,76 @@
+--=============================================================================
+
+Declare @Date					nvarchar(20) = '{0}'
+
+DECLARE @ToEmails				nvarchar(300) = NULL
+      , @Subject				nvarchar(200)
+      , @MailMsg				nvarchar(Max)
+      
+
+Set @Subject = 'Daily Customer Order [RECEIPT] Summary for all customers : ' + @Date
+--Set @ToEmails = 'ushan.dalwis@jonathanlouis.net'
+Set @ToEmails = 'Brandee.Reyes@jonathanlouis.com'
+
+Declare @EDI_Customers nvarchar(300)
+Select @EDI_Customers = cp.Charfld1
+From ue_JLI_CustParms cp 
+Where cp.parmid = 'JLI_DailyOrderRecieptSummaryReport' And cp.ParmKey = 'CustomersGroup'
+
+Declare @Customers Table(cust_num CustNumType)
+If IsNull(@EDI_Customers,'') <> ''
+Begin    
+    Insert Into @Customers(cust_num)
+    SELECT Split.a.value('.', 'VARCHAR(100)') AS Code
+    FROM (SELECT CAST('<M>' + REPLACE(@EDI_Customers, ',', '</M><M>') + '</M>' AS XML) AS Data) AS A
+    CROSS APPLY Data.nodes('/M') AS Split(a);
+End
+
+
+If Exists(SELECT Top 1 1 FROM co_mst co WHERE IIF(Exists(Select 1 From @Customers Where cust_num = co.cust_num),Cast(co.CreateDate As Date),Cast(co.Uf_ProofReadDate As Date)) = @Date)
+Begin
+
+	SELECT @MailMsg = STUFF((
+							SELECT 
+								CONCAT(co.cust_num,' ',co.name
+									  ,'<br>'
+									  , STUFF((
+		    								SELECT CONCAT(cust_po, '[', co_num, ']')
+		    								FROM co_mst co_inner
+		    								INNER JOIN custaddr_mst addr_inner 
+		    									ON addr_inner.cust_num = co_inner.cust_num 
+		    								   AND addr_inner.cust_seq = co_inner.cust_seq
+		    								WHERE 
+		    									IIF(Exists(Select 1 From @Customers Where cust_num = co_inner.cust_num),Cast(co_inner.CreateDate As Date),Cast(co_inner.Uf_ProofReadDate As Date)) = @Date
+		    									AND co_inner.cust_num = co.cust_num
+												And co_inner.cust_num In (Select Distinct CustNum 
+																		  From DocProfileCustomer_mst 
+																		  Where RptName ='Order Verification Report'
+																		  And active = 1 And Destination Is Not Null)
+		    								FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 0, '')
+										,'<br>'
+										,'<br>'
+									)  
+							FROM (
+								SELECT DISTINCT co.cust_num,addr.name
+								FROM co_mst co
+								INNER JOIN custaddr_mst addr 
+									ON addr.cust_num = co.cust_num 
+								   AND addr.cust_seq = co.cust_seq
+								WHERE 
+									IIF(Exists(Select 1 From @Customers Where cust_num = co.cust_num ),Cast(co.CreateDate As Date),Cast(co.Uf_ProofReadDate As Date)) = @Date 
+									And co.cust_num In (Select Distinct CustNum 
+														From DocProfileCustomer_mst 
+														Where RptName ='Order Verification Report'
+														And active = 1 And Destination Is Not Null)
+							) co
+							FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 0, '')
+	
+
+	--Create EmailQueue for Report Email Addresses.
+	Insert Into ue_JLI_EmailQueue (EmailDoc,email_sub,email_body,email_to,submitted_by,body_format)
+	Values(1,@Subject,@MailMsg,@ToEmails,'sa','HTML')
+
+
+End
+
+--=============================================================================

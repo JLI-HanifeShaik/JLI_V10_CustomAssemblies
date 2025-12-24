@@ -1,0 +1,15 @@
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\ue_JLI_ZeshtIt.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\ue_JLI_ZeshtIt.pdb
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\MGSharedResources.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\WSFormServerProtocol.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\obj\Release\ue_JLI_ZeshtIt.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\obj\Release\ue_JLI_ZeshtIt.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\obj\Release\ue_JLI_ZeshtIt.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\obj\Release\ue_JLI_ZeshtIt.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_ZeshtIt\obj\Release\ue_JLI_ZeshtIt.pdb

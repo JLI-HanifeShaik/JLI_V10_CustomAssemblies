@@ -1,0 +1,43 @@
+SELECT
+   coi.site_ref     As SiteRef,
+   coi.co_num       As CoNum,
+   coi.co_line      As CoLine,
+   coi.co_cust_num  As CustNum,
+   coi.item         As Item,
+   coi.ship_date    As ShipDate,
+   coi.qty_ordered  As QtyOrdered,
+   coi.qty_shipped  As QtyShipped,
+   coi.stat         As Stat,
+   coi.RecordDate   As RecordDate,
+   coi.Uf_Cancelled As Cancelled,
+   coi.Uf_CancelledReason As CancelledReason,
+   coi.Uf_EstimatedShipDate As EstimatedShipDate,
+   -- JSON array of distinct, trimmed inv_num strings
+   ISNULL('[' + STUFF((
+       SELECT ',' +
+           '"' + distinct_inv.inv_num + '"'
+       FROM (
+           SELECT DISTINCT LTRIM(RTRIM(inv.inv_num)) AS inv_num
+           FROM [dbo].[inv_item_mst] AS inv
+           WHERE inv.co_num = coi.co_num
+             AND inv.co_line = coi.co_line
+             AND inv.item = coi.item
+             AND inv.inv_num IS NOT NULL
+       ) AS distinct_inv
+       FOR XML PATH(''), TYPE
+   ).value('.', 'NVARCHAR(MAX)'), 1, 1, '') + ']', '[]') As InvoiceNumbers,
+   -- JSON array of distinct, trimmed LoadNo strings
+   ISNULL('[' + STUFF((
+       SELECT ',' +
+           '"' + distinct_loads.LoadNo + '"'
+       FROM (
+           SELECT DISTINCT LTRIM(RTRIM(li.LoadNo)) AS LoadNo
+           FROM [dbo].[ue_JLI_LoadItem] AS li
+           WHERE li.CO_Num = coi.co_num AND li.CO_Line = coi.co_line
+             AND li.LoadNo IS NOT NULL
+       ) AS distinct_loads
+       FOR XML PATH(''), TYPE
+   ).value('.', 'NVARCHAR(MAX)'), 1, 1, '') + ']', '[]') AS LoadNumbers
+FROM [dbo].[coitem_mst] AS coi
+INNER JOIN [dbo].[item_mst] AS i ON coi.item = i.item
+WHERE coi.RecordDate >= @pi_StartDate;

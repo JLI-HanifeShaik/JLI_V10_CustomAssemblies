@@ -1,0 +1,241 @@
+	Declare @ResultSet Table(
+	 RecordType			Nchar(1)
+	,[partner]			nvarchar(50)
+	,[sword_num]		nvarchar(10)
+	,[sword_line]		Int
+	,[cust_num]			CustNumType
+	,[status]			NChar(1)
+	,[po_num]			PoNumType
+	,[po_date]			datetime
+	,[rcvd_Date]		datetime
+	,[ord_type]			nvarchar(2)
+	,[ref_num]			nvarchar(20)
+	,[shipto_name]		nvarchar(40)
+	,[shipto_addr]		nvarchar(40)
+	,[shipto_city]		nvarchar(40)
+	,[shipto_state]		nvarchar(40)
+	,[shipto_zip]		nvarchar(40)
+	,[shipto_email]		nvarchar(60)
+	,[qty]				int
+	,[um]				nvarchar(10)
+	,[price]			decimal(12,2)
+	,[sku]				nvarchar(10)
+	,[description]		nvarchar(40)
+	)
+	
+	
+	Declare
+	 @ReqDate		DateType
+	,@Name			NameType
+	,@Email			EmailType
+	,@MailingAddr	nvarchar(200)
+	,@Swatch_1		DescriptionType
+	,@Swatch_2		DescriptionType
+	,@Swatch_3		DescriptionType
+	,@Swatch_4		DescriptionType
+	,@Swatch_5		DescriptionType
+	,@RowPointer	RowPointerType
+	,@Notes			nvarchar(200)
+
+	,@Fabric		ItemType
+
+	DECLARE 
+	 @PONum       nvarchar(30)
+	,@RcvDate     NVARCHAR(30) --datetime
+	,@OrdType     nvarchar(2)
+	,@RefNum      nvarchar(200)
+	,@ShipToName  nvarchar(40)
+	,@ShipToAddr  nvarchar(100)
+	,@ShipToCity  nvarchar(40)
+	,@ShipToState nvarchar(40)
+	,@ShipToZip   nvarchar(40)
+	,@CustNum     CustNumType
+	,@SwordNum    nvarchar(20)
+	,@Id			Int
+
+	Declare @Fabrics Table (Fabric DescriptionType,ID Int Identity(1,1))
+
+	DECLARE cursor_SwatchReq CURSOR FOR 
+	Select
+	 req_date
+	,name
+	,email
+	,mailing_addr
+	,swatch_1
+	,swatch_2
+	,swatch_3
+	,swatch_4
+	,swatch_5
+	,RowPointer
+	From [ue_JLI_SwatchReqTemp_mst] 
+	Where stat = 'P'
+
+	OPEN cursor_SwatchReq;
+	FETCH NEXT FROM cursor_SwatchReq INTO @ReqDate,@Name,@Email,@MailingAddr,@Swatch_1,@Swatch_2,@Swatch_3,@Swatch_4,@Swatch_5,@RowPointer
+	WHILE @@FETCH_STATUS = 0
+		BEGIN
+		----------------------------------
+			IF OBJECT_ID('tempdb..#Fabrics') IS NOT NULL 
+			BEGIN 
+				DROP TABLE #Fabrics 
+			END
+			Create Table #Fabrics(Fabric nvarchar(60),ID Int Identity(1,1))
+
+			Set @Notes = ''
+			Set @CustNum = 'C000640'
+
+			If IsNull(@Name,'') = ''
+			Begin
+				Update [ue_JLI_SwatchReqTemp_mst] Set stat = 'E', notes = 'Customer Name Not Found' Where RowPointer = @RowPointer
+				GOTO SkipToNext
+			End
+
+			Select Top 1 @PONum = RIGHT(po_num,Len(po_num) - CHARINDEX('-', po_num + '-')) 
+			From [ue_JLI_SWReqHdr_mst] Where cust_num = @CustNum Order By po_num Desc
+
+			Set @PONum = IIF(IsNull(@PONum,'') <> '',Format(@ReqDate,'MMddyyyy') + '-' + @PONum,Format(@ReqDate,'MMddyyyy') + '-1')
+			Set @RefNum = @PONum
+			Set @OrdType = 'DS'
+			Set @ShipToName = @Name
+			Set @ShipToAddr = LEFT(@MailingAddr, CHARINDEX(',', @MailingAddr + ',') - 1)
+			Set @MailingAddr  = REPLACE(@MailingAddr,Concat(@ShipToAddr,','),'')
+			Set @ShipToCity = LEFT(@MailingAddr, CHARINDEX(',', @MailingAddr + ',') - 1)
+			Set @MailingAddr  = REPLACE(@MailingAddr,Concat(@ShipToCity,','),'')
+			Set @ShipToState = LEFT(@MailingAddr, CHARINDEX(',', @MailingAddr + ',') - 1)
+			Set @MailingAddr  = REPLACE(@MailingAddr,Concat(@ShipToState,','),'')
+			Set @ShipToZip = LEFT(@MailingAddr, CHARINDEX(',', @MailingAddr + ',') - 1)
+			Set @MailingAddr  = REPLACE(@MailingAddr,@ShipToZip,'')
+
+			INSERT INTO ue_JLI_SWReqHdr_mst
+				([cust_num],[status],[partner],[po_num],[po_date],[rcvd_Date],[ord_type],[ref_num]
+				,[shipto_name],[shipto_addr],[shipto_city],[shipto_state],[shipto_zip],[shipto_email]
+				)
+			Select 
+				 @CustNum
+				,'R'
+				,'LIVING SPACES'			--<partner, nvarchar(50),>
+				,@PONum						--<po_num, nvarchar(30),>
+				,Cast(@ReqDate As Date)		--<po_date, datetime,>
+				,GETDATE()					--<rcvd_Date, datetime,>
+				,@OrdType					--<ord_type, nvarchar(2),>
+				,@RefNum					--<ref_num, nvarchar(20),>
+				,@ShipToName				--<shipto_name, nvarchar(40),>
+				,@ShipToAddr				--<shipto_addr, nvarchar(40),>
+				,@ShipToCity				--<shipto_city, nvarchar(40),>
+				,@ShipToState				--<shipto_state, nvarchar(40),>
+				,@ShipToZip					--<shipto_zip, nvarchar(40),>
+				,@Email
+			
+			Select Top 1 @Id = Id From [ue_JLI_SWReqHdr_mst] Where cust_num = @CustNum Order By Id Desc
+			Select @SwordNum = dbo.ExpandKyByType('CoNumType','SW' + CAST(@Id As VARCHAR(10) ) )
+			Set @Notes = 'Your Order Number ' + @SwordNum
+
+			If IsNull(@Swatch_1,'')<> ''
+			Begin
+				SELECT @Fabric = COALESCE((SELECT Top 1 item FROM item_mst WHERE description = @Swatch_1),
+								(SELECT Top 1 item FROM item_mst 
+								 WHERE description LIKE LEFT(@Swatch_1, CHARINDEX('-', @Swatch_1 + '-') - 1) + '%' )
+							   )
+
+				If IsNull(@Fabric,'') <> ''
+					INSERT INTO #Fabrics(Fabric) Select @Fabric
+				Else
+					Set @Notes = @Notes + CHAR(13) + CHAR(10) + 'Swatch_1 Not Found'
+			End
+			If IsNull(@Swatch_2,'')<> ''
+			Begin
+				SELECT @Fabric = COALESCE((SELECT Top 1 item FROM item_mst WHERE description = @Swatch_2),
+								(SELECT Top 1 item FROM item_mst 
+								 WHERE description LIKE LEFT(@Swatch_2, CHARINDEX('-', @Swatch_2 + '-') - 1) + '%' )
+							   )
+				If IsNull(@Fabric,'') <> ''
+					INSERT INTO #Fabrics(Fabric) Select @Fabric
+				Else
+					Set @Notes = @Notes + CHAR(13) + CHAR(10) + 'Swatch_2 Not Found'
+			End
+			If IsNull(@Swatch_3,'')<> ''
+			Begin
+				SELECT @Fabric = COALESCE((SELECT Top 1 item FROM item_mst WHERE description = @Swatch_3),
+								(SELECT Top 1 item FROM item_mst 
+								 WHERE description LIKE LEFT(@Swatch_3, CHARINDEX('-', @Swatch_3 + '-') - 1) + '%' )
+							   )
+				If IsNull(@Fabric,'') <> ''
+					INSERT INTO #Fabrics(Fabric) Select @Fabric
+				Else
+					Set @Notes = @Notes + CHAR(13) + CHAR(10) + 'Swatch_3 Not Found'
+			End
+			If IsNull(@Swatch_4,'')<> ''
+			Begin
+				SELECT @Fabric = COALESCE((SELECT Top 1 item FROM item_mst WHERE description = @Swatch_4),
+								(SELECT Top 1 item FROM item_mst 
+								 WHERE description LIKE LEFT(@Swatch_4, CHARINDEX('-', @Swatch_4 + '-') - 1) + '%' )
+							   )
+				If IsNull(@Fabric,'') <> ''
+					INSERT INTO #Fabrics(Fabric) Select @Fabric
+				Else
+					Set @Notes = @Notes + CHAR(13) + CHAR(10) + 'Swatch_4 Not Found'
+			End
+			If IsNull(@Swatch_5,'')<> ''
+			Begin
+				SELECT @Fabric = COALESCE((SELECT Top 1 item FROM item_mst WHERE description = @Swatch_5),
+								(SELECT Top 1 item FROM item_mst 
+								 WHERE description LIKE LEFT(@Swatch_5, CHARINDEX('-', @Swatch_5 + '-') - 1) + '%' )
+							   )
+				If IsNull(@Fabric,'') <> ''
+					INSERT INTO #Fabrics(Fabric) Select @Fabric
+				Else
+					Set @Notes = @Notes + CHAR(13) + CHAR(10) + 'Swatch_5 Not Found'
+				
+			End
+
+
+
+			INSERT INTO ue_JLI_SWReqItem_mst([sword_num],[sword_line],[partner],[po_num],[po_date],[qty],[um],[price],[sku],[description])
+			SELECT @SwordNum
+				  ,F.ID
+				  ,'LIVING SPACES'
+				  ,@PONum 
+				  ,Cast(GetDate() As Date)
+				  ,1					     
+				  ,'EA'
+				  ,0.00
+				  ,Fabric
+				  ,I.description
+			FROM #Fabrics F Inner Join Item_mst I On I.item = F.Fabric
+
+			Update [ue_JLI_SwatchReqTemp_mst] Set stat = 'S', notes = @Notes Where RowPointer = @RowPointer
+
+		-----------------------------------
+			SkipToNext:
+
+			FETCH NEXT FROM cursor_SwatchReq INTO @ReqDate,@Name,@Email,@MailingAddr,@Swatch_1,@Swatch_2,@Swatch_3,@Swatch_4,@Swatch_5,@RowPointer
+		END;
+	CLOSE cursor_SwatchReq;
+	DEALLOCATE cursor_SwatchReq;
+
+	--Select  
+	-- RecordType		
+	--,[partner]		
+	--,[sword_num]	
+	--,[sword_line]	
+	--,[cust_num]		
+	--,[status]		
+	--,[po_num]		
+	--,[po_date]		
+	--,[rcvd_Date]	
+	--,[ord_type]		
+	--,[ref_num]		
+	--,[shipto_name]	
+	--,[shipto_addr]	
+	--,[shipto_city]	
+	--,[shipto_state]	
+	--,[shipto_zip]	
+	--,[shipto_email]	
+	--,[qty]			
+	--,[um]			
+	--,[price]		
+	--,[sku]			
+	--,[description]	
+	--From @ResultSet
+
+--=============================================================================

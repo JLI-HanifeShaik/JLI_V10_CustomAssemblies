@@ -1,0 +1,35 @@
+[
+  {
+    "Name": "Accept",
+    "Type": "header",
+    "Value": "application/json"
+  },
+  {
+    "Name": "body",
+    "Type": "body",
+    "Value": {
+      "item": {
+        "attrs": {
+          "attr": [
+            {
+              "name": "{0}",
+              "value": "{1}"
+            }
+          ]
+        }
+      },
+      "files": {
+        "res": [
+          {
+            "filename": "{2}",
+            "base64": "{3}"
+          }
+        ]
+      },
+      "acl": {
+        "name": "Public"
+      },
+      "entityName": "{4}"
+    }
+  }
+]

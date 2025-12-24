@@ -1,0 +1,7 @@
+select cust_num
+,RIGHT(CONCAT('000', CAST(LTRIM(RTRIM(inv_num)) AS VARCHAR(10))), 10) As inv_num
+,CAST(convert(decimal(18,4),amount+sales_tax) as nvarchar(100)) AS amount
+,convert(varchar,inv_date,101) As inv_date 
+from artran_mst 
+where Cast(inv_date As Date) = Cast(@inpDate As Date) and type = 'I'
+

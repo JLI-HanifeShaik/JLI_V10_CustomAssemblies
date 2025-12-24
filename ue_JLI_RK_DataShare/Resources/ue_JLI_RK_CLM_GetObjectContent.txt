@@ -1,0 +1,22 @@
+DECLARE @Objects TABLE (
+    ObjectName NVARCHAR(256),
+    ObjectType NVARCHAR(100)
+);
+
+-- Get the objects you want (add or remove types as needed)
+INSERT INTO @Objects
+SELECT name, type_desc
+FROM sys.objects
+WHERE type = @ObjectType
+  AND name = @ObjectName
+  AND is_ms_shipped = 0
+ORDER BY name;
+
+-------------------------------------------------------
+-- For each object -> get text using sys.sql_modules
+-------------------------------------------------------
+SELECT Top 1 SM.definition AS ObjectContent
+FROM @Objects O
+LEFT JOIN sys.sql_modules SM 
+    ON OBJECT_ID(O.ObjectName) = SM.object_id
+ORDER BY O.ObjectType, O.ObjectName;

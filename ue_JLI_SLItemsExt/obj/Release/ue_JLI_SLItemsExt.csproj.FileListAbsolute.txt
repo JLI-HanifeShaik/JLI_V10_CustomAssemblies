@@ -1,0 +1,25 @@
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\bin\Release\ue_JLI_SLItemsExt.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\bin\Release\ue_JLI_SLItemsExt.pdb
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\bin\Release\MGScriptMgr.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.dll
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.pdb
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies\JLI_SLItems-IDO\V10\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\bin\Release\ue_JLI_SLItemsExt.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\bin\Release\ue_JLI_SLItemsExt.pdb
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\obj\Release\ue_JLI_SLItemsExt.pdb
+C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_SLItemsExt\bin\Release\ue_JLI.dll

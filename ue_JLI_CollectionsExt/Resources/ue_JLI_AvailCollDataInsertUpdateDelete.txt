@@ -1,0 +1,125 @@
+
+Declare 
+  @CollectionID						nvarchar(10)    = '{0}' 
+, @inpNewCollectionGroup			nvarchar(30)    = '{1}'
+, @inpOldCollectionGroup			nvarchar(30)    = '{2}'
+, @inpNewStatus						nchar(1)        = '{3}'
+, @inpOldStatus						nchar(1)        = '{4}'
+, @inpNewPriceBook					ListYesNoType   = '{5}'
+, @inpOldPriceBook					ListYesNoType   = '{6}'
+, @inpNewExclusive					ListYesNoType   = '{7}'
+, @inpOldExclusive					ListYesNoType   = '{8}'
+, @ProcessType					    nvarchar(30)    = '{9}'
+
+
+
+
+Declare @ShowCollection		ListYesNoType = 1
+, @PriceBook				ListYesNoType
+, @ContractOnlyCust			ListYesNoType
+, @CustNum					Nvarchar(15)
+
+Declare @ResultSet Table(
+  CustNum					Nvarchar(20)
+, Item						Nvarchar(30)
+, ShowCollection			ListYesNoType
+, RecordType				Nchar(1)
+, CollectionGroup			Nvarchar(30)
+)
+ 
+Set @inpNewPriceBook = IsNull(@inpNewPriceBook,0)
+Set @inpOldPriceBook = IsNull(@inpOldPriceBook,0)
+Set @inpNewExclusive = IsNull(@inpNewExclusive,0)
+Set @inpOldExclusive = IsNull(@inpOldExclusive,0)
+
+If @ProcessType = 'Delete'
+Begin
+    Delete From ue_JLI_AvailableCollection_mst Where record_type = 'C' And item = @CollectionID
+    Return
+End
+
+
+
+DECLARE Cursor_AvailCollecGroups CURSOR local static FOR
+	Select ACG.cust_num,IsNull(cust.Uf_PriceBook,0),IsNull(cust.Uf_contract_only_cust,0)
+	From ue_JLI_AvailCollecGroups_mst ACG 
+	Inner Join customer cust 
+	On cust.cust_num = ACG.cust_num And cust.cust_seq = 0
+	Where available_collec_group = @inpNewCollectionGroup
+OPEN Cursor_AvailCollecGroups;
+FETCH NEXT FROM Cursor_AvailCollecGroups INTO @CustNum,@PriceBook,@ContractOnlyCust
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	----------------------------------------------------
+
+    If @PriceBook = @ContractOnlyCust
+		GoTo SkipInsert
+
+    If @ContractOnlyCust = 1
+		Set @ShowCollection = 0
+
+    If @ProcessType = 'Insert'
+    Begin
+        If Exists(Select Top 1 1 From ue_JLI_AvailableCollection_mst Where cust_num = @CustNum And item = @CollectionID)
+            Delete From ue_JLI_AvailableCollection_mst Where record_type = 'C' And cust_num = @CustNum And item = @CollectionID	    
+        If @PriceBook = 1 And @inpNewPriceBook <> 1
+            GoTo SkipInsert
+        If @inpNewStatus = 'A'
+            Insert Into @ResultSet(CustNum,Item,ShowCollection,RecordType,CollectionGroup)
+            Select @CustNum,@CollectionID,@ShowCollection,'C',@inpNewCollectionGroup
+    End
+    Else If @ProcessType = 'jcolUf_CollectionGroup'
+    Begin
+        Delete From ue_JLI_AvailableCollection_mst Where cust_num = @CustNum And CollectionGroup = @inpOldCollectionGroup
+        If @PriceBook = 1 And @inpNewPriceBook <> 1
+            GoTo SkipInsert
+        If @inpNewStatus = 'A'
+        Insert Into @ResultSet(CustNum,Item,ShowCollection,RecordType,CollectionGroup)
+		Select @CustNum,@CollectionID,@ShowCollection,'C',@inpNewCollectionGroup
+    End
+    Else If @ProcessType = 'Stat'
+	Begin
+	    If @inpNewStatus In ('D','P')
+	    Begin
+	        Delete From ue_JLI_AvailableCollection_mst Where item = @CollectionID And cust_num = @CustNum
+	    End
+	    Else If @inpNewStatus = 'A'
+	    Begin
+            If @inpOldStatus = 'P'
+                Set @ShowCollection = '0'
+            If Exists(Select Top 1 1  From ue_JLI_AvailableCollection_mst Where cust_num = @CustNum And item = @CollectionID)
+                Delete From ue_JLI_AvailableCollection_mst Where cust_num = @CustNum And item = @CollectionID
+            If @PriceBook = 1 And @inpNewPriceBook <> 1
+                GoTo SkipInsert
+            Insert Into @ResultSet(CustNum,Item,ShowCollection,RecordType,CollectionGroup)
+            Select @CustNum,@CollectionID,@ShowCollection,'C',@inpNewCollectionGroup
+        End
+	End
+    Else If @ProcessType = 'jcolUf_PriceBook'
+    Begin
+        If @inpNewPriceBook = 1 And @inpNewExclusive = 1
+            GoTo SkipInsert
+        Delete From ue_JLI_AvailableCollection_mst Where cust_num = @CustNum And item = @CollectionID
+        If @inpNewPriceBook = 0
+            GoTo SkipInsert
+        If @PriceBook = 1 And @inpNewPriceBook <> 1
+            GoTo SkipInsert
+        If @inpNewStatus = 'A'
+        Insert Into @ResultSet(CustNum,Item,ShowCollection,RecordType,CollectionGroup)
+        Select @CustNum,@CollectionID,@ShowCollection,'C',@inpNewCollectionGroup
+    End
+    
+	
+
+	SkipInsert:
+	----------------------------------------------------
+	FETCH NEXT FROM Cursor_AvailCollecGroups INTO @CustNum,@PriceBook,@ContractOnlyCust
+END
+CLOSE Cursor_AvailCollecGroups;
+DEALLOCATE Cursor_AvailCollecGroups;
+
+Insert Into ue_JLI_AvailableCollection_mst(cust_num,item,record_type,CollectionGroup,show_collection)
+Select CustNum,Item,RecordType,CollectionGroup,ShowCollection From @ResultSet
+
+
+

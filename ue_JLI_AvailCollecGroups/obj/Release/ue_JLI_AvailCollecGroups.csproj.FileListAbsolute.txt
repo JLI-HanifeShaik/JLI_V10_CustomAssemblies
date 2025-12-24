@@ -1,0 +1,16 @@
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\ue_JLI_AvailCollecGroups.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\ue_JLI_AvailCollecGroups.pdb
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\MGScriptMgr.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\obj\Release\ue_JLI_AvailCollecGroups.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\obj\Release\ue_JLI_AvailCollecGroups.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\obj\Release\ue_JLI_AvailCollecGroups.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\obj\Release\ue_JLI_AvailCollecGroups.dll
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\obj\Release\ue_JLI_AvailCollecGroups.pdb
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\obj\Release\ue_JLI_AvailCollecGroups.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies\JLI_AvailCollecGroups-IDO\V10\ue_JLI_AvailCollecGroups\obj\Release\ue_JLI_AvailCollecGroups.csproj.GenerateResource.cache

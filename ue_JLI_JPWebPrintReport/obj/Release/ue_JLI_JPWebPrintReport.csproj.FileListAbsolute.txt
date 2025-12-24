@@ -1,0 +1,9 @@
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\obj\Release\ue_JLI_JPWebPrintReport.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\obj\Release\ue_JLI_JPWebPrintReport.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\bin\Release\ue_JLI_JPWebPrintReport.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\bin\Release\ue_JLI_JPWebPrintReport.pdb
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\obj\Release\ue_JLI_JPWebPrintReport.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\obj\Release\ue_JLI_JPWebPrintReport.dll
+C:\Hanife\JL Custom Assemblies\ue_JLI_JPWebPrintReport-IDO\ue_JLI_JPWebPrintReport\obj\Release\ue_JLI_JPWebPrintReport.pdb

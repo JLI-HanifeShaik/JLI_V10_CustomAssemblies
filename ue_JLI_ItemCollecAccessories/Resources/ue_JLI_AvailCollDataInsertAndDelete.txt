@@ -1,0 +1,42 @@
+Declare 
+  @Item						ItemType		= '{0}'
+, @NewAssortGroups		    nvarchar(35)	= '{1}'
+, @OldAssortGroups		    nvarchar(35)	= '{2}'
+, @ItemPriceBook			ListYesNoType	= '{3}'
+, @ItemExclusive			ListYesNoType	= '{4}'
+
+Declare 
+  @cusUf_PriceBook				ListYesNoType
+, @cusUf_contract_only_cust		ListYesNoType
+, @ShowCollection				ListYesNoType = 1
+, @CustNum						CustNumType
+
+
+DECLARE cursor_AvailCollecGroups CURSOR local static FOR
+	Select cust_num From ue_JLI_AvailCollecGroups_mst Where available_collec_group = 'Accessories'
+OPEN cursor_AvailCollecGroups;
+FETCH NEXT FROM cursor_AvailCollecGroups INTO @CustNum
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	----------------------------------------------------
+	If Exists(Select Top 1 1  From ue_JLI_AvailableCollection_mst Where record_type = 'A' And cust_num = @CustNum And item = @Item)
+		GoTo Skip;
+	Select @cusUf_PriceBook = IsNull(Uf_PriceBook,0), @cusUf_contract_only_cust = isNull(Uf_contract_only_cust,0) From customer Where cust_num = @CustNum And cust_seq = 0
+	If @cusUf_PriceBook = 0 And @cusUf_contract_only_cust = 0
+		Return
+
+	If @cusUf_PriceBook = 1 And @ItemPriceBook = 1
+		Set @ShowCollection = 1
+	Else
+		Set @ShowCollection = 0
+
+	Insert Into ue_JLI_AvailableCollection_mst(cust_num,item,record_type,CollectionGroup,show_collection)
+	Select @CustNum,@Item,'A',@NewAssortGroups,@ShowCollection
+ 
+
+	Skip:
+	----------------------------------------------------
+	FETCH NEXT FROM cursor_AvailCollecGroups INTO @CustNum
+END
+CLOSE cursor_AvailCollecGroups;
+DEALLOCATE cursor_AvailCollecGroups;

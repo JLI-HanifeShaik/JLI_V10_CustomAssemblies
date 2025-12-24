@@ -1,0 +1,60 @@
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\MGScriptMgr.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\obj\Release\JLI_JPScans.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\obj\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\JLI_JPScans\obj\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\bin\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\bin\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\obj\Release\JLI_JPScans.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\obj\Release\JLI_JPScans.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\obj\Release\JLI_JPScans.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\obj\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies\JLI_JPScans-IDO\V10\JLI_JPScans\obj\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\bin\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\bin\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\obj\Release\JLI_JPScans.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\obj\Release\JLI_JPScans.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\obj\Release\JLI_JPScans.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\obj\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies V10\BackUps\20251124\JLI_JPScans\obj\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\bin\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\bin\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\obj\Release\JLI_JPScans.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\obj\Release\JLI_JPScans.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\obj\Release\JLI_JPScans.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\obj\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies V10\JLI_JPScans\obj\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\JLI_JPScans.pdb
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\IDOBase.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\IDOCore.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\IDOProtocol.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\MGScriptMgr.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\MGShared.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\bin\Release\WSEnums.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\obj\Release\JLI_JPScans.csproj.AssemblyReference.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\obj\Release\JLI_JPScans.Properties.Resources.resources
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\obj\Release\JLI_JPScans.csproj.GenerateResource.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CoreCompileInputs.cache
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\obj\Release\JLI_JPScans.csproj.CopyComplete
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\obj\Release\JLI_JPScans.dll
+C:\Hanife\JL Custom Assemblies V10\Projects\JLI_JPScans\obj\Release\JLI_JPScans.pdb

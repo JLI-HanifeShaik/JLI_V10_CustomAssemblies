@@ -1,0 +1,113 @@
+Declare 
+  @Item								ItemType	= '{0}'
+, @PropertyName						varchar(30) = '{1}'
+, @ReasonDate						varchar(30)	= '{2}'
+, @inpNewStatus						nchar(1)	= '{3}'
+, @inpOldStatus						nchar(1)	= '{4}'
+, @inpNewItemLifeCycleStatus		varchar(30)	= '{5}'
+, @inpOldItemLifeCycleStatus		varchar(30)	= '{6}'
+, @inpNewSchedItemType				varchar(30)	= '{7}'
+, @inpOldSchedItemType				varchar(30)	= '{8}'
+
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'Item' + @Item
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'PropertyName' + @PropertyName
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'ReasonDate' + @ReasonDate
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'inpNewStatus' + @inpNewStatus
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'inpOldStatus' + @inpOldStatus
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'inpNewItemLifeCycleStatus' + @inpNewItemLifeCycleStatus
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'inpOldItemLifeCycleStatus' + @inpOldItemLifeCycleStatus
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'inpNewSchedItemType' + @inpNewSchedItemType
+--insert Into ue_ZESHT_CustomAssemblyLogs_mst(Comments)Select 'inpOldSchedItemType' + @inpOldSchedItemType
+
+Declare 
+  @DroppedDate				varchar(15)
+, @AddedDate				varchar(15)
+, @Status					nchar(1) = 'P'
+
+--Set @ReasonDate = Null
+
+Select @DroppedDate = IsNull(@ReasonDate,Format(GETDATE(),'yyyy-MM-dd')), @AddedDate = Format(GETDATE(),'yyyy-MM-dd')
+
+Declare @ResultSet Table(
+ Item			ItemType
+,ProcessType	nchar(1)
+,Status			nchar(1)
+,DroppedDate	varchar(15)
+)
+
+
+If @PropertyName = 'Stat'
+Begin
+	If @inpNewStatus = @inpOldStatus Or @inpNewSchedItemType <> 'Accessory'
+		Return
+
+	If Exists(Select Top 1 1 From ue_JLI_ItemCollecAccessory_mst Where item = @Item)
+	Begin		
+		If IsNull(@inpNewItemLifeCycleStatus,'E-Ready') = 'E-Ready'
+		Begin
+			If @inpNewStatus = 'O' And @inpOldStatus = 'A'
+				Select @Status = 'D'
+		End
+		Else
+		Begin
+			If @inpNewStatus = 'O'
+				Select @Status = 'D'
+		End
+
+		Select @DroppedDate = IIF(@Status = 'D',@DroppedDate,Null)
+		Insert Into @ResultSet(Item,ProcessType,Status,DroppedDate)
+		Select @Item,'U',@Status,@DroppedDate
+	End
+	Else
+	Begin		
+		If @inpNewStatus = 'A' And IsNull(@inpNewItemLifeCycleStatus,'E-Ready') = 'E-Ready'
+			Insert Into @ResultSet(Item,ProcessType,Status)
+			Select @Item,'I','P'
+	End
+End
+Else If @PropertyName = 'itmUf_ItemLifeCycleStatus'
+Begin
+	If @inpNewItemLifeCycleStatus = @inpOldItemLifeCycleStatus Or @inpNewSchedItemType <> 'Accessory'
+		Return
+	If Exists(Select Top 1 1 From ue_JLI_ItemCollecAccessory_mst Where item = @Item)
+	Begin		 		
+		If IsNull(@inpNewItemLifeCycleStatus,'E-Ready') = 'E-Ready' 
+		Begin
+			If @inpNewStatus = 'A' 
+				Select @Status = 'A'
+			Else If @inpNewStatus = 'O'
+				Select @Status = 'D'
+		End
+		Select @DroppedDate = IIF(@Status = 'D',@DroppedDate,Null)
+		Insert Into @ResultSet(Item,ProcessType,Status,DroppedDate)
+		Select @Item,'U',@Status,@DroppedDate
+	End
+	Else
+	Begin		
+		If @inpNewStatus = 'A' And IsNull(@inpNewItemLifeCycleStatus,'E-Ready') = 'E-Ready'
+			Insert Into @ResultSet(Item,ProcessType,Status)
+			Select @Item,'I','P'
+	End
+End
+Else If @PropertyName = 'itmUf_SchedItemType'
+Begin
+	If @inpNewSchedItemType = @inpOldSchedItemType
+		Return
+	
+
+	If @inpNewSchedItemType = 'Accessory'
+	Begin
+		If Exists(Select Top 1 1 From ue_JLI_ItemCollecAccessory_mst Where item = @Item)
+			Return
+		If @inpNewStatus = 'A' And IsNull(@inpNewItemLifeCycleStatus,'E-Ready') = 'E-Ready'
+			Insert Into @ResultSet(Item,ProcessType)
+			Select @Item,'I'
+	End
+	Else If @inpOldSchedItemType = 'Accessory'
+		Insert Into @ResultSet(Item,ProcessType)
+		Select @Item,'D'
+End
+
+
+
+Select Item,ProcessType,Status,DroppedDate From @ResultSet

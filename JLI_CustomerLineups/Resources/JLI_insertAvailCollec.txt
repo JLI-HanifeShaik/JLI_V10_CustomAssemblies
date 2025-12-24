@@ -1,0 +1,11 @@
+Declare 
+  @CustNum			CustNumtype		= '{0}' 
+ ,@Item				Itemtype		= '{1}'
+
+If Not Exists(Select Top 1 1 From item Where item = @Item And stat = 'A')
+	Return
+If Exists(Select Top 1 1 From ue_JLI_AvailableCollection Where cust_num = @CustNum And item = @Item And record_type = 'S')
+	Return
+
+Insert Into ue_JLI_AvailableCollection_mst(cust_num,record_type,item,show_collection)
+Select @CustNum,'S',@Item,'1'
