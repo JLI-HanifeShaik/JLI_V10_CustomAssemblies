@@ -37,3 +37,5 @@ C:\Hanife\JLI V10 Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\MGCoreExtSafe.dll
 C:\Hanife\JLI V10 Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Hanife\JLI V10 Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\System.Threading.Tasks.Extensions.dll
 C:\Hanife\JLI V10 Custom Assemblies\ue_JLI_ZeshtIt\bin\Release\IDORequestClient.dll
+C:\Hanife\JLI V10 Custom Assemblies\ue_JLI_ZeshtIt\obj\Release\ue_JLI_ZeshtIt.Properties.Resources.resources
+C:\Hanife\JLI V10 Custom Assemblies\ue_JLI_ZeshtIt\obj\Release\ue_JLI_ZeshtIt.csproj.GenerateResource.cache

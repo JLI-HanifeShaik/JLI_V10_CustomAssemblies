@@ -9,9 +9,11 @@ using Mongoose.MGCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ue_JLI_ZeshtIt.Properties;
 
 namespace ue_JLI_ZeshtIt
 {
@@ -49,14 +51,34 @@ namespace ue_JLI_ZeshtIt
         }
 
         [IDOMethod(MethodFlags.RequiresTransaction, "infobar")]
-        public int ue_JLI_DocTrackAttachToIDM(ref string infobar)
+        public int ue_JLI_DocTrackAttachToIDM(string fromFolder,
+                                              string toFolder, 
+                                              int? recordCap,
+                                              short? attachToIDM,
+                                              string entityName,
+                                              string entityType,
+                                              string processType,
+                                              ref string infobar)
         {
+            if (recordCap < 1)
+                recordCap = 1;
+            if (attachToIDM != 1)
+                attachToIDM = 0;
+
+            if (string.IsNullOrEmpty(fromFolder) || string.IsNullOrEmpty(toFolder))
+            {
+                infobar = "Input values missing (fromFolder,toFolder).";
+                return 0;
+            }
+            if (attachToIDM == 1 && (string.IsNullOrEmpty(entityName) || string.IsNullOrEmpty(entityType) || string.IsNullOrEmpty(processType)) )
+            {
+                infobar = "Input values missing (entityName,entityType,processType).";
+                return 0;
+            }
 
             string errMsg = string.Empty;
-            string logicalFolderNameFrom = string.Empty;
-            string logicalFolderName_Archive = string.Empty;
-            logicalFolderNameFrom = "1_TRN_JLI_DOC_Track";
-            logicalFolderName_Archive = "1_TRN_JLI_DOC_Track_Archive";
+            string logicalFolderNameFrom = fromFolder;
+            string logicalFolderName_Archive = toFolder;
 
             // Get list of files from method
             DataTable files = ue_JLI_GetFileList(logicalFolderNameFrom, ref infobar);
@@ -84,36 +106,98 @@ namespace ue_JLI_ZeshtIt
             string fileSpecTo = string.Empty;
 
             string fileName = string.Empty;
+            string fileDesc = string.Empty;
             int moved = 0;
             byte[] fileContent = null;
             string parsedFileSpec = string.Empty;
 
             string filter = string.Empty;
             string coNum = string.Empty;
+            string rmaNum = string.Empty;
+            string loadNo = string.Empty;
+            string idoName = string.Empty;
+            string propertyList = string.Empty;
 
             // Create instance of your file server extension class
             FileServerExtension fileServer = new FileServerExtension();
 
             ue_JLI_GetFileServerInfoByLogicalFolderName(logicalFolderNameFrom, ref serverFrom, ref folderTemplateFrom, ref accessDepthFrom, ref infobar);
             ue_JLI_GetFileServerInfoByLogicalFolderName(logicalFolderName_Archive, ref serverTo, ref folderTemplateTo, ref accessDepthTo, ref infobar);
+            if (!string.IsNullOrEmpty(infobar) || string.IsNullOrEmpty(serverFrom) || string.IsNullOrEmpty(serverTo))
+            {
+                infobar = "Invalid Input Values (fromFolder,toFolder).";
+                return 0;
+            }        
+            
 
             try
             {
                 foreach (DataRow row in files.Rows)
                 {
                     fileName = row["DerFileName"]?.ToString();
-                    if (fileName.Length > 10)
-                        coNum = fileName.Substring(0, 10);
-                    filter = string.Format("CoNum = '{0}' ", coNum);
 
-                    fileSpecFrom = ue_JLI_GetFileSpec(folderTemplateFrom, fileName, ".pdf", accessDepthFrom, true);
-                    fileServer.GetFileContent(fileSpecFrom, serverFrom, logicalFolderNameFrom, ref fileContent, ref parsedFileSpec, ref infobar);
-                    //createLog("", "", 3, "GetFileContent " + infobar);
-                    ue_JLI_AddContentToIDM("CS_SalesOrder", "CustomerOrder", "JLI", fileName, fileContent, "CustomerOrder", "SLCos", "CustNum,CoNum,CustPo", filter, ref errMsg);
+                    if(processType == "CustomerOrder")
+                    {
+                        if (fileName.Length >= 10)
+                            coNum = fileName.Substring(0, 10);
+                        else
+                            continue;                        
+                        fileDesc = coNum + " CustomerOrder Doc Track File";
+                        idoName = "SLCos";
+                        propertyList = "CustNum,CoNum,CustPo";
+                        filter = string.Format("CoNum = '{0}' ", coNum);
+                    }
+                    else if (processType == "RMA")
+                    {
+                        //R000001149-20191210
+                        if (fileName.Length >= 10)
+                            rmaNum = fileName.Substring(0, 10);
+                        else
+                            continue;
+                        fileDesc = rmaNum + " RMA Doc Track File";
+                        idoName = "SLRmas";
+                        propertyList = "RmaNum";
+                        filter = string.Format("RmaNum = '{0}' ", rmaNum);
+                    }
+                    else if (processType == "BOL_Signed")
+                    {
+                        //496861-20251110-0001
+                        if (fileName.IndexOf("-") > 0)
+                        {
+                            loadNo = fileName.Substring(0, (fileName.IndexOf("-")) );
+                        }
+                        else if (fileName.Length >= 6)
+                            loadNo = fileName.Substring(0, 6);
+                        else
+                            continue;
+                        fileDesc = loadNo + " BOL Signed Doc Track File";
+                        idoName = "JLI_LoadHdrs";
+                        propertyList = "LoadNo";
+                        filter = string.Format("LoadNo = '{0}' ", loadNo);
+                    }
+                    else if (attachToIDM == 1)
+                    {
+                        infobar = "Logic not implimented for " + processType;
+                        return 0;
+                    }
                     
-                    fileSpecTo = ue_JLI_GetFileSpec(folderTemplateTo, fileName, ".pdf", accessDepthTo, true);
-                    fileServer.MoveFileServerToServer(ref infobar, ref moved, serverFrom, fileSpecFrom, logicalFolderNameFrom, serverTo, fileSpecTo, logicalFolderName_Archive, 1, 1);
-                    break;
+
+                    fileSpecFrom = ue_JLI_GetFileSpec(folderTemplateFrom, fileName, "*.*", accessDepthFrom, true);
+                    if(attachToIDM == 1)
+                    {
+                        fileServer.GetFileContent(fileSpecFrom, serverFrom, logicalFolderNameFrom, ref fileContent, ref parsedFileSpec, ref infobar);                    
+                        ue_JLI_AddContentToIDM(entityName, entityType, "JLI", fileName, fileContent, fileDesc, idoName, propertyList, filter, ref errMsg);
+                    }
+
+                    if (string.IsNullOrEmpty(errMsg))
+                    {                        
+                        fileSpecTo = ue_JLI_GetFileSpec(folderTemplateTo, fileName, "*.*", accessDepthTo, true);
+                        fileServer.MoveFileServerToServer(ref infobar, ref moved, serverFrom, fileSpecFrom, logicalFolderNameFrom, serverTo, fileSpecTo, logicalFolderName_Archive, 1, 1);
+                    }
+                    recordCap = recordCap - 1;
+
+                    if (recordCap < 1)
+                        break;
                 }
             }
             catch (Exception ex)
@@ -133,7 +217,7 @@ namespace ue_JLI_ZeshtIt
             string getFileAction = "File";
             string errMsg = string.Empty;
             ue_JLI_GetFileServerInfoByLogicalFolderName(logicalFolderName, ref fileServer, ref folderTemplate, ref accessDepth, ref errMsg);
-            string fileSpec = ue_JLI_GetFileSpec(folderTemplate, "", ".pdf", accessDepth, true);
+            string fileSpec = ue_JLI_GetFileSpec(folderTemplate, "", "*.*", accessDepth, true);
             FileServerExtension fileServerExtension = new FileServerExtension();
             // Assuming GetFileList returns a DataTable
             DataTable files = fileServerExtension.GetFileList(fileSpec, fileServer, logicalFolderName, getFileAction, ref errMsg);
@@ -378,7 +462,33 @@ namespace ue_JLI_ZeshtIt
             return dt;
         }
 
-
+        [IDOMethod(MethodFlags.CustomLoad, "infobar")]
+        public DataTable ue_JLI_TestQuery(string query, ref string infobar)
+        {
+            IDataReader Resultset = null;
+            DataTable dt = new DataTable();
+            string sqlScript = string.Empty; 
+            using (ApplicationDB appdb = IDORuntime.Context.CreateApplicationDB())
+            {
+                using (IDbCommand sql = appdb.CreateCommand())
+                {
+                    try
+                    {
+                        sqlScript = Resources.ue_JLI_TestQuery;
+                        sql.CommandType = CommandType.Text;
+                        sql.CommandText = sqlScript;
+                        appdb.AddCommandParameterWithValue(sql, "query", query);                        
+                        Resultset = sql.ExecuteReader();                        
+                        dt.Load(Resultset);                        
+                    }
+                    catch (Exception ex)
+                    {
+                        infobar = ex.Message;
+                    }
+                }
+            }
+            return dt;
+        }
 
 
 

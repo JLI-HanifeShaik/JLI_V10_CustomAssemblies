@@ -1,0 +1,23 @@
+--DECLARE @query NVARCHAR(MAX);
+
+--BEGIN TRAN;
+
+BEGIN TRY
+   
+    EXEC (@query);
+
+END TRY
+BEGIN CATCH
+
+    SELECT
+        ERROR_NUMBER()    AS ErrorNumber,
+        ERROR_MESSAGE()   AS ErrorMessage,
+        ERROR_SEVERITY()  AS ErrorSeverity,
+        ERROR_STATE()     AS ErrorState,
+        ERROR_LINE()      AS ErrorLine,
+        ERROR_PROCEDURE() AS ErrorProcedure;
+END CATCH;
+
+-- Always rollback 
+--ROLLBACK TRAN;
+
