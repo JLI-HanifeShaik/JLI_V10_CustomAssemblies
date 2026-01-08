@@ -115,6 +115,8 @@ namespace ue_JLI_ZeshtIt
             string coNum = string.Empty;
             string rmaNum = string.Empty;
             string loadNo = string.Empty;
+            string ReceiptNum = string.Empty;            
+            string PONum = string.Empty;
             string idoName = string.Empty;
             string propertyList = string.Empty;
 
@@ -174,6 +176,111 @@ namespace ue_JLI_ZeshtIt
                         idoName = "JLI_LoadHdrs";
                         propertyList = "LoadNo";
                         filter = string.Format("LoadNo = '{0}' ", loadNo);
+                    }
+                    else if (processType == "Comercial Docs")
+                    {
+                        //496861-20251110-0001
+                        if (fileName.IndexOf("-") > 0)
+                        {
+                            loadNo = fileName.Substring(0, (fileName.IndexOf("-")));
+                        }
+                        else if (fileName.Length >= 6)
+                            loadNo = fileName.Substring(0, 6);
+                        else
+                            continue;
+                        fileDesc = loadNo + " Comercial Doc Track File";
+                        idoName = "JLI_LoadHdrsPO";
+                        propertyList = "LoadNo";
+                        filter = string.Format("LoadNo = '{0}' ", loadNo);
+                    }
+                    else if (processType == "Comercial Invoice")
+                    {
+                        //496861-20251110-0001
+                        if (fileName.IndexOf("-") > 0)
+                        {
+                            loadNo = fileName.Substring(0, (fileName.IndexOf("-")));
+                        }
+                        else if (fileName.Length >= 6)
+                            loadNo = fileName.Substring(0, 6);
+                        else
+                            continue;
+                        fileDesc = loadNo + " Comercial Invoice Doc Track File";
+                        idoName = "JLI_LoadHdrsPO";
+                        propertyList = "LoadNo";
+                        filter = string.Format("LoadNo = '{0}' ", loadNo);
+                    }
+                    else if (processType == "Comercial Packing List")
+                    {
+                        //496861-20251110-0001
+                        if (fileName.IndexOf("-") > 0)
+                        {
+                            loadNo = fileName.Substring(0, (fileName.IndexOf("-")));
+                        }
+                        else if (fileName.Length >= 6)
+                            loadNo = fileName.Substring(0, 6);
+                        else
+                            continue;
+                        fileDesc = loadNo + " Comercial Packing List Doc Track File";
+                        idoName = "JLI_LoadHdrsPO";
+                        propertyList = "LoadNo";
+                        filter = string.Format("LoadNo = '{0}' ", loadNo);
+                    }
+                    else if (processType == "PO Loads")
+                    {
+                        //496861-20251110-0001
+                        if (fileName.IndexOf("-") > 0)
+                        {
+                            loadNo = fileName.Substring(0, (fileName.IndexOf("-")));
+                        }
+                        else if (fileName.Length >= 6)
+                            loadNo = fileName.Substring(0, 6);
+                        else
+                            continue;
+                        fileDesc = loadNo + " Doc Track File";
+                        idoName = "JLI_LoadHdrsPO";
+                        propertyList = "LoadNo";
+                        filter = string.Format("LoadNo = '{0}' ", loadNo);
+                    }
+                    else if (processType == "PO Receving Doc-MX")
+                    {
+                        //496861-20251110-0001
+                        if (fileName.IndexOf("-") > 0)
+                        {
+                            loadNo = fileName.Substring(0, (fileName.IndexOf("-")));
+                        }
+                        else if (fileName.Length >= 6)
+                            loadNo = fileName.Substring(0, 6);
+                        else
+                            continue;
+                        fileDesc = loadNo + " PO Receving (MX) Doc Track File";
+                        idoName = "JLI_LoadHdrsPO";
+                        propertyList = "LoadNo";
+                        filter = string.Format("LoadNo = '{0}' ", loadNo);
+                    }
+                    
+                    else if (processType == "JLM_PO")
+                    {
+                        //JLMPO001//PM002656
+                        if (fileName.Length >= 8)
+                            PONum = fileName.Substring(0, 8);
+                        else
+                            continue;
+                        fileDesc = PONum + " Doc Track File";
+                        idoName = "ue_JLI_JLM_PUR_PoHdrs";
+                        propertyList = "PoNum";
+                        filter = string.Format("PoNum = '{0}' ", PONum);
+                    }
+                    else if (processType == "JLM_PO_Receipt")
+                    {
+                        //JLMR0001609
+                        if (fileName.Length >= 11)
+                            ReceiptNum = fileName.Substring(0, 11);
+                        else
+                            continue;
+                        fileDesc = ReceiptNum + " Doc Track File";
+                        idoName = "ue_JLI_JLM_PUR_ReceiptHdrs";
+                        propertyList = "ReceiptNum";
+                        filter = string.Format("ReceiptNum = '{0}' ", ReceiptNum);
                     }
                     else if (attachToIDM == 1)
                     {
@@ -290,9 +397,13 @@ namespace ue_JLI_ZeshtIt
 
             // Get Name/Value pairs for IdoPropertyList
             DataTable dt = new DataTable();
-            using (DataTableReader reader = new DataTableReader(ue_JLI_CLM_GetIDONameValueData(idoCollection, idoPropertyList, idoFilter)))
+            using (DataTableReader reader = new DataTableReader(ue_JLI_CLM_GetIDONameValueData(idoCollection, idoPropertyList, idoFilter,ref errMsg)))
             {
                 dt.Load(reader);
+            }
+            if(!string.IsNullOrEmpty(errMsg)) 
+            {
+                return; 
             }
             //createLog("", "", 1, dt.Rows.Count.ToString());
 
@@ -367,13 +478,13 @@ namespace ue_JLI_ZeshtIt
             }
             catch (Exception ex)
             {
-                errMsg = ex.Message;
+                errMsg = ex.Message;                
             }
 
 
 
         }
-        private DataTable ue_JLI_CLM_GetIDONameValueData(string IDOName, string PropList, string Filter)
+        private DataTable ue_JLI_CLM_GetIDONameValueData(string IDOName, string PropList, string Filter,ref string errMsg)
         {
             // add RowPointer to property list
             PropList += ",RowPointer";
@@ -406,6 +517,11 @@ namespace ue_JLI_ZeshtIt
                 IDOrequest.Filter = Filter;
                 IDOrequest.RecordCap = 1;
                 IDOresponse = this.Context.Commands.LoadCollection(IDOrequest);
+
+                if(IDOresponse.Items.Count < 0)
+                {
+                    errMsg = "Details Not found";                    
+                }
 
                 // loop through properties & assign values to datatable rows
                 foreach (IDOItem ii in IDOresponse.Items)
