@@ -115,6 +115,7 @@ namespace ue_JLI_ZeshtIt
             string coNum = string.Empty;
             string rmaNum = string.Empty;
             string loadNo = string.Empty;
+            string VendNum = string.Empty;            
             string ReceiptNum = string.Empty;            
             string PONum = string.Empty;
             string idoName = string.Empty;
@@ -256,8 +257,7 @@ namespace ue_JLI_ZeshtIt
                         idoName = "JLI_LoadHdrsPO";
                         propertyList = "LoadNo";
                         filter = string.Format("LoadNo = '{0}' ", loadNo);
-                    }
-                    
+                    }                    
                     else if (processType == "JLM_PO")
                     {
                         //JLMPO001//PM002656
@@ -282,6 +282,19 @@ namespace ue_JLI_ZeshtIt
                         propertyList = "ReceiptNum";
                         filter = string.Format("ReceiptNum = '{0}' ", ReceiptNum);
                     }
+                    else if (processType == "1_W9_OtherDocs")
+                    {
+                        //R000023
+                        if (fileName.Length >= 7)
+                            VendNum = fileName.Substring(0, 7);
+                        else
+                            continue;
+                        fileDesc = VendNum + " Doc Track File";
+                        idoName = "SLVendors";
+                        propertyList = "VendNum";
+                        filter = string.Format("VendNum = '{0}' ", VendNum);
+                    }
+                    //1_W9_OtherDocs
                     else if (attachToIDM == 1)
                     {
                         infobar = "Logic not implimented for " + processType;

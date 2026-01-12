@@ -76,6 +76,7 @@ namespace ue_JLI_PAPP_DataShare
             string fileName = string.Empty;
             string fileContent = string.Empty;
             string parsedFileSpec = string.Empty;
+            int deleted = 0;
             var ue_JLI_PAPP_QCIssuesDT = ue_JLI_CreateDataTable("ue_JLI_PAPP_QCIssues", "CreatedBy,UpdatedBy,CreateDate,RecordDate,RowPointer,NoteExistsFlag,InWorkflow,SerialNo,QC_date,whse,QC_usercode,QC_name,status,QC_loc,QC_defect,QC_source,QC_part,QC_rate,Uf_total_time_of_scan,Uf_InspectionArea,appStartTime,appEndTime");
             
             // Create instance of your file server extension class
@@ -100,7 +101,6 @@ namespace ue_JLI_PAPP_DataShare
                         string[] parts = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                         foreach (string part in parts)
                         {
-
                             string SerialNo = null;
                             string QC_date = null;
                             string QC_loc = null;
@@ -127,41 +127,46 @@ namespace ue_JLI_PAPP_DataShare
                             string[] tabParts = part.Split('\t');
                             
                             if (tabParts.Length >= 22) // safety check
-                                {
-                                    SerialNo = tabParts[0];
-                                    QC_date = tabParts[1];
-                                    QC_loc = tabParts[2];
-                                    QC_source = tabParts[3];
-                                    QC_defect = tabParts[4];
-                                    QC_part = tabParts[5];
-                                    QC_rate = decimal.TryParse(tabParts[6], out var r) ? r : 0;
-                                    QC_name = tabParts[7];
-                                    QC_usercode = tabParts[8];
-                                    status = tabParts[9];
-                                    whse = tabParts[10];
-                                    Uf_InspectionArea = tabParts[11];
-                                    Uf_total_time_of_scan = decimal.TryParse(tabParts[12], out var t) ? t : 0;
-                                    appStartTime = tabParts[13];
-                                    appEndTime = tabParts[14];
-                                    CreateDate = tabParts[15];
-                                    CreatedBy = tabParts[16];
-                                    RecordDate = tabParts[17];
-                                    UpdatedBy = tabParts[18];
-                                    InWorkflow = int.TryParse(tabParts[12], out var p) ? p : 0;
-                                    NoteExistsFlag = int.TryParse(tabParts[12], out var q) ? q : 0;
-                                    RowPointer = tabParts[21];
-                                    ue_JLI_PAPP_QCIssuesDT.Rows.Add(CreatedBy, UpdatedBy, CreateDate, RecordDate, RowPointer, NoteExistsFlag, InWorkflow, SerialNo, QC_date, whse, QC_usercode, QC_name, status, QC_loc, QC_defect, QC_source, QC_part, QC_rate, Uf_total_time_of_scan, Uf_InspectionArea, appStartTime, appEndTime);                  
-                                }
+                            {
+                                SerialNo = tabParts[0];
+                                QC_date = tabParts[1];
+                                QC_loc = tabParts[2];
+                                QC_source = tabParts[3];
+                                QC_defect = tabParts[4];
+                                QC_part = tabParts[5];
+                                QC_rate = decimal.TryParse(tabParts[6], out var r) ? r : 0;
+                                QC_name = tabParts[7];
+                                QC_usercode = tabParts[8];
+                                status = tabParts[9];
+                                whse = tabParts[10];
+                                Uf_InspectionArea = tabParts[11];
+                                Uf_total_time_of_scan = decimal.TryParse(tabParts[12], out var t) ? t : 0;
+                                appStartTime = tabParts[13];
+                                appEndTime = tabParts[14];
+                                CreateDate = tabParts[15];
+                                CreatedBy = tabParts[16];
+                                RecordDate = tabParts[17];
+                                UpdatedBy = tabParts[18];
+                                InWorkflow = int.TryParse(tabParts[12], out var p) ? p : 0;
+                                NoteExistsFlag = int.TryParse(tabParts[12], out var q) ? q : 0;
+                                RowPointer = tabParts[21];
+
+                                SerialNo = SerialNo.PadLeft(30);
+
+                                ue_JLI_PAPP_QCIssuesDT.Rows.Add(CreatedBy, UpdatedBy, CreateDate, RecordDate, RowPointer, NoteExistsFlag, InWorkflow, SerialNo, QC_date, whse, QC_usercode, QC_name, status, QC_loc, QC_defect, QC_source, QC_part, QC_rate, Uf_total_time_of_scan, Uf_InspectionArea, appStartTime, appEndTime);                  
+                            }
 
 
                         }//foreach (string part in parts)                        
 
                     }//if (!string.IsNullOrEmpty(fileContent))
 
+                    fileServer.DeleteFromFileServer(serverName, fileSpec, logicalFolderName, ref deleted, ref infobar);
+
                 }//foreach (DataRow row in files.Rows)
 
-                createLog("", "", 22, ue_JLI_PAPP_QCIssuesDT.Rows.Count.ToString());
-                //Context.Commands.SaveDataTable(ue_JLI_PAPP_QCIssuesDT, true);
+                //createLog("", "", 22, ue_JLI_PAPP_QCIssuesDT.Rows.Count.ToString());
+                Context.Commands.SaveDataTable(ue_JLI_PAPP_QCIssuesDT, true);
             }
             catch (Exception ex)
             {
@@ -201,7 +206,8 @@ namespace ue_JLI_PAPP_DataShare
             string fileName = string.Empty;
             string fileContent = string.Empty;
             string parsedFileSpec = string.Empty;
-            var ue_JLI_FedExTracingsDT = ue_JLI_CreateDataTable("ue_JLI_FedExTracing", "CoNum,TrackingNum,Date,Weight,Amount");
+            int deleted = 0;
+            var ue_JLI_FedExTracingsDT = ue_JLI_CreateDataTable("ue_JLI_FedExTracings", "CoNum,TrackingNum,Date,Weight,Amount");
 
             // Create instance of your file server extension class
             FileServerExtension fileServer = new FileServerExtension();
@@ -247,10 +253,12 @@ namespace ue_JLI_PAPP_DataShare
 
                     }//if (!string.IsNullOrEmpty(fileContent))
 
+                    fileServer.DeleteFromFileServer(serverName, fileSpec, logicalFolderName, ref deleted, ref infobar);
+
                 }//foreach (DataRow row in files.Rows)
 
-                createLog("RowPointer", "", 22, ue_JLI_FedExTracingsDT.Rows.Count.ToString());
-                //Context.Commands.SaveDataTable(ue_JLI_FedExTracingsDT, true);
+                //createLog("RowPointer", "", 22, ue_JLI_FedExTracingsDT.Rows.Count.ToString());
+                Context.Commands.SaveDataTable(ue_JLI_FedExTracingsDT, true);
             }
             catch (Exception ex)
             {
