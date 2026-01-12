@@ -98,5 +98,8 @@
   <ItemGroup>
     <None Include="Resources\ue_JLI_Json.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ue_JLI_ARPostedTranDtlEDIInvSentDateUpdate.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

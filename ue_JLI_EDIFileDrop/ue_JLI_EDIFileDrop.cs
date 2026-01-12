@@ -10,6 +10,8 @@ using CSI.FullTrust.IDM;
 using CSI.MG;
 using System.Text;
 using System.Linq;
+using System.Globalization;
+using ue_JLI_EDIFileDrop.Properties;
 
 namespace ue_JLI_EDIFileDrop
 {
@@ -28,6 +30,7 @@ namespace ue_JLI_EDIFileDrop
             string errMsg = string.Empty;
             string logicalFolderNameFrom = string.Empty;
             string logicalFolderName_Archive = string.Empty;
+            string fileExtension = ".pdf";
             DataTable filesList = new DataTable();
             filesList.Columns.Add("ID", typeof(int));
             filesList.Columns.Add("FileName", typeof(string));
@@ -38,7 +41,7 @@ namespace ue_JLI_EDIFileDrop
             logicalFolderName_Archive = "1_PRD_JLI_EDICustomerPOsARC";
 
             // Get list of files from method
-            DataTable files = ue_JLI_GetFileList(logicalFolderNameFrom,ref infobar);
+            DataTable files = ue_JLI_GetFileList(logicalFolderNameFrom, fileExtension, ref infobar);
 
             if (!string.IsNullOrEmpty(infobar))
             {
@@ -202,7 +205,7 @@ namespace ue_JLI_EDIFileDrop
 
             return 0;
         }
-        private DataTable ue_JLI_GetFileList(string logicalFolderName, ref string infobar)
+        private DataTable ue_JLI_GetFileList(string logicalFolderName, string fileExtension, ref string infobar)
         {
             string fileServer = string.Empty;
             string folderTemplate = string.Empty;
@@ -210,7 +213,7 @@ namespace ue_JLI_EDIFileDrop
             string getFileAction = "File";
             string errMsg = string.Empty;
             ue_JLI_GetFileServerInfoByLogicalFolderName(logicalFolderName, ref fileServer, ref folderTemplate, ref accessDepth, ref errMsg);
-            string fileSpec = ue_JLI_GetFileSpec(folderTemplate, "", ".pdf", accessDepth, true);
+            string fileSpec = ue_JLI_GetFileSpec(folderTemplate, "", fileExtension, accessDepth, true);
             FileServerExtension fileServerExtension = new FileServerExtension();
             // Assuming GetFileList returns a DataTable
             DataTable files = fileServerExtension.GetFileList(fileSpec, fileServer, logicalFolderName, getFileAction, ref errMsg);
@@ -595,6 +598,125 @@ namespace ue_JLI_EDIFileDrop
         }
 
 
+        //******//GL0029 - [A/R Posted Transaction Details - EDI Invoice Sent (date)-Elsy]*******\\\\\
+        [IDOMethod(MethodFlags.RequiresTransaction, "infobar")]
+        public int ue_JLI_ARPostedTranDtlEDIInvSentDateUpdate(ref string infobar)
+        {
+            
+            string logicalFolderNameFrom = string.Empty;
+            string logicalFolderName_Archive = string.Empty;
+            string filExtension = ".txt";
+            
+            logicalFolderNameFrom = "1_PRD_JLI_C3000InvoiceSend";
+            logicalFolderName_Archive = "1_PRD_JLI_C3000InvoiceSendArchive";
+
+            // Get list of files from method
+            DataTable files = ue_JLI_GetFileList(logicalFolderNameFrom, filExtension, ref infobar);
+
+            if (!string.IsNullOrEmpty(infobar))
+            {
+                infobar = "Error while getting file list: " + infobar;
+                return 0;
+            }
+
+            if (files == null || files.Rows.Count == 0)
+            {
+                infobar = "No files found.";
+                return 0;
+            }
+
+            string serverFrom = string.Empty;
+            string folderTemplateFrom = string.Empty;
+            string accessDepthFrom = string.Empty;
+            string fileSpecFrom = string.Empty;
+
+            string serverTo = string.Empty;
+            string folderTemplateTo = string.Empty;
+            string accessDepthTo = string.Empty;
+            string fileSpecTo = string.Empty;
+
+            string fileName = string.Empty;
+            int moved = 0;
+            string fileContent = string.Empty;
+            string parsedFileSpecTo = string.Empty;
+
+            // Create instance of your file server extension class
+            FileServerExtension fileServer = new FileServerExtension();
+
+            ue_JLI_GetFileServerInfoByLogicalFolderName(logicalFolderNameFrom, ref serverFrom, ref folderTemplateFrom, ref accessDepthFrom, ref infobar);
+            ue_JLI_GetFileServerInfoByLogicalFolderName(logicalFolderName_Archive, ref serverTo, ref folderTemplateTo, ref accessDepthTo, ref infobar);
+
+            try
+            {
+                foreach (DataRow row in files.Rows)
+                {
+                    string invSendDate = string.Empty;
+                    List<string> invList = new List<string>();
+                    fileName = row["DerFileName"]?.ToString();
+                    fileSpecFrom = ue_JLI_GetFileSpec(folderTemplateFrom, fileName, filExtension, accessDepthFrom, true);
+
+                    fileServer.GetFileContentAsBase64String(fileSpecFrom, serverFrom, logicalFolderNameFrom, ref fileContent, ref parsedFileSpecTo, ref infobar);
+
+                    if (!string.IsNullOrEmpty(fileContent))
+                    {
+                        byte[] bytes = Convert.FromBase64String(fileContent);
+                        fileContent = Encoding.UTF8.GetString(bytes);
+                        string[] parts = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string line in parts)
+                        {
+                            if (line.StartsWith("810-"))
+                                invList.Add(line.Remove(0, 6).Trim());
+
+                            //12/15/2025 9:35:34 AM
+                            if (line.StartsWith("Sent : "))
+                            {
+                                invSendDate = line.Remove(0, 7).Trim();
+                                invSendDate = invSendDate.Replace(Environment.NewLine,"").Replace("/","-").Trim() ;
+                                //invSendDate = DateTime.ParseExact(invSendDate, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture).ToString();
+                                //infobar = invSendDate;
+                            }
+                        }
+                    }
+                    foreach (string invNum in invList)
+                    {
+                        ue_JLI_UpdateEDISendDate(invNum, invSendDate, ref infobar);
+                    }
+                    fileSpecTo = ue_JLI_GetFileSpec(folderTemplateTo, fileName, filExtension, accessDepthTo, true);
+                    fileServer.MoveFileServerToServer(ref infobar, ref moved, serverFrom, fileSpecFrom, logicalFolderNameFrom, serverTo, fileSpecTo, logicalFolderName_Archive, 1, 1);
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                infobar = ex.Message;
+            }
+
+
+            return 0;
+        }
+        private void ue_JLI_UpdateEDISendDate(string invNum, string sendDate, ref string errMsg)
+        {
+            string query = Resources.ue_JLI_ARPostedTranDtlEDIInvSentDateUpdate;
+            using (ApplicationDB appdb = IDORuntime.Context.CreateApplicationDB())
+            {
+                using (IDbCommand sql = appdb.CreateCommand())
+                {
+                    try
+                    {
+                        sql.CommandType = CommandType.Text;
+                        sql.CommandText = query;
+                        appdb.AddCommandParameterWithValue(sql, "InvNum", invNum, ParameterDirection.Input).Size = 20;
+                        appdb.AddCommandParameterWithValue(sql, "InvSendDate", sendDate, ParameterDirection.Input);
+                        appdb.ExecuteNonQuery(sql);
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                    }
+                }
+            }
+        }
 
 
 

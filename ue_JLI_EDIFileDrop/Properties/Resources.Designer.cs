@@ -61,6 +61,18 @@ namespace ue_JLI_EDIFileDrop.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to --Declare  @InvNum InvNumType = &apos;1&apos; 
+        ///Select @InvNum = dbo.ExpandKyByType(&apos;InvNumType&apos;, @InvNum)
+        ///Update [dbo].[artran] set Uf_EDIInv_sendDate = @InvSendDate Where type=&apos;I&apos; AND inv_num = @InvNum
+        ///.
+        /// </summary>
+        internal static string ue_JLI_ARPostedTranDtlEDIInvSentDateUpdate {
+            get {
+                return ResourceManager.GetString("ue_JLI_ARPostedTranDtlEDIInvSentDateUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [
         ///  {
         ///    &quot;Name&quot;: &quot;Accept&quot;,
@@ -75,7 +87,7 @@ namespace ue_JLI_EDIFileDrop.Properties {
         ///        &quot;attrs&quot;: {
         ///          &quot;attr&quot;: [
         ///            {
-        ///              &quot;CoNum&quot;: &quot;{0}&quot;,
+        ///              &quot;name&quot;: &quot;{0}&quot;,
         ///              &quot;value&quot;: &quot;{1}&quot;
         ///            }
         ///          ]
@@ -90,9 +102,7 @@ namespace ue_JLI_EDIFileDrop.Properties {
         ///        ]
         ///      },
         ///      &quot;acl&quot;: {
-        ///        &quot;name&quot;: &quot;Public&quot;
-        ///      },
-        ///      &quot;e [rest of string was truncated]&quot;;.
+        ///        &quot;name&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ue_JLI_Json {
             get {

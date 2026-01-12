@@ -1,0 +1,3 @@
+--Declare  @InvNum InvNumType = '1' 
+Select @InvNum = dbo.ExpandKyByType('InvNumType', @InvNum)
+Update [dbo].[artran] set Uf_EDIInv_sendDate = @InvSendDate Where type='I' AND inv_num = @InvNum
