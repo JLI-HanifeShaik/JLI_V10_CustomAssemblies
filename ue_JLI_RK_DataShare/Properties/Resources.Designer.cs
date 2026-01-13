@@ -61,16 +61,24 @@ namespace ue_JLI_RK_DataShare.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DECLARE @t TABLE (Line NVARCHAR(MAX));
-        ///DECLARE @txt NVARCHAR(MAX) = N&apos;&apos;;
+        ///   Looks up a localized string similar to DECLARE @Objects TABLE (
+        ///    ObjectName NVARCHAR(256),
+        ///    ObjectType NVARCHAR(100)
+        ///);
         ///
-        ///INSERT INTO @t
-        ///EXEC sp_helptext @ObjectName;
+        ///-- Get the objects you want (add or remove types as needed)
+        ///INSERT INTO @Objects
+        ///SELECT name, type_desc
+        ///FROM sys.objects
+        ///WHERE type = @ObjectType
+        ///  AND name = @ObjectName
+        ///  AND is_ms_shipped = 0
+        ///ORDER BY name;
         ///
-        ///-- Concatenate all lines
-        ///SELECT @txt = @txt + Line
-        ///FROM @t
-        ///Select @txt As [Content].
+        ///-------------------------------------------------------
+        ///-- For each object -&gt; get text using sys.sql_modules
+        ///-------------------------------------------------------
+        ///SELECT Top 1 SM.definition AS O [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ue_JLI_RK_CLM_GetObjectContent {
             get {
@@ -91,6 +99,19 @@ namespace ue_JLI_RK_DataShare.Properties {
         internal static string ue_JLI_RK_CLM_GetObjectList {
             get {
                 return ResourceManager.GetString("ue_JLI_RK_CLM_GetObjectList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EXEC (@query);
+        ///
+        ///
+        ///
+        ///.
+        /// </summary>
+        internal static string ue_JLI_TestQuery {
+            get {
+                return ResourceManager.GetString("ue_JLI_TestQuery", resourceCulture);
             }
         }
     }

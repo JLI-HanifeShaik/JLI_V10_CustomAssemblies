@@ -31,6 +31,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSI.FullTrust">
+      <HintPath>..\Referenced\CSI.FullTrust.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.MG">
+      <HintPath>..\Referenced\CSI.MG.dll</HintPath>
+    </Reference>
+    <Reference Include="ICP.Standard">
+      <HintPath>..\Referenced\ICP.Standard.dll</HintPath>
+    </Reference>
     <Reference Include="IDOBase">
       <HintPath>..\..\Referenced\IDOBase.dll</HintPath>
     </Reference>
@@ -40,6 +49,9 @@
     <Reference Include="IDOProtocol, Version=7.1.0.0, Culture=neutral, PublicKeyToken=87d3698afe01ef37, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Referenced\IDOProtocol.dll</HintPath>
+    </Reference>
+    <Reference Include="MGCoreExt">
+      <HintPath>..\Referenced\MGCoreExt.dll</HintPath>
     </Reference>
     <Reference Include="MGShared">
       <HintPath>..\..\Referenced\MGShared.dll</HintPath>
@@ -73,6 +85,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ue_JLI_RK_CLM_GetObjectContent.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ue_JLI_TestQuery.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
