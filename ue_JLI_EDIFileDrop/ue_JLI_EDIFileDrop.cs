@@ -238,20 +238,6 @@ namespace ue_JLI_EDIFileDrop
 
             return fileSpec;
         }
-        private void ue_JLI_GetlogicalFolderName(ref string logicalFolderNameFrom, ref string logicalFolderName_Archive)
-        {
-            LoadCollectionResponseData oResponse;
-            string propertyList = "Charfld1,Charfld2,Charfld3";
-            string strFilter = "ParmId = 'EDI' And ParmKey = 'OutputDirectory' ";
-
-            oResponse = this.Context.Commands.LoadCollection("JLI_CustParms", propertyList, strFilter, "", 0);
-
-            if (oResponse.Items.Count > 0)
-            {
-                logicalFolderNameFrom = oResponse[0, "Charfld1"].Value.Trim();
-                logicalFolderName_Archive = oResponse[0, "Charfld2"].Value.Trim();
-            }
-        }
         private void ue_JLI_GetFileServerInfoByLogicalFolderName(string logicalFolderName, ref string fileServerName, ref string folderTemplate, ref string accessDepth, ref string errMsg)
         {
             using (ApplicationDB appdb = IDORuntime.Context.CreateApplicationDB())
@@ -597,7 +583,29 @@ namespace ue_JLI_EDIFileDrop
 
         }
 
+        public DataTable CreateDataTable(string idoName, string idoProps)
+        {
+            DataTable dataTable = new DataTable(idoName);
+            string[] array = idoProps.Split(',');
+            for (int i = 0; i < array.Length; i++)
+            {
+                dataTable.Columns.Add(new DataColumn(array[i]));
+            }
 
+            return dataTable;
+        }
+        private DataTable ue_JLI_GetCustParmsInfo(string ParmId, string ParmKey)
+        {
+            LoadCollectionResponseData oResponse;
+            string propertyList = "Charfld1,Charfld2,Charfld3,Charfld4,Charfld5";
+            DataTable dtCustParmsData = CreateDataTable("JLI_CustParms", propertyList);
+            string strFilter = string.Format("ParmId = '{0}' And ParmKey = '{1}' ", ParmId, ParmKey);
+            oResponse = this.Context.Commands.LoadCollection("JLI_CustParms", propertyList, strFilter, "", 0);
+            if (oResponse.Items.Count > 0)
+                oResponse.Fill(dtCustParmsData);
+
+            return dtCustParmsData;
+        }
         //******//GL0029 - [A/R Posted Transaction Details - EDI Invoice Sent (date)-Elsy]*******\\\\\
         [IDOMethod(MethodFlags.RequiresTransaction, "infobar")]
         public int ue_JLI_ARPostedTranDtlEDIInvSentDateUpdate(ref string infobar)
@@ -606,9 +614,21 @@ namespace ue_JLI_EDIFileDrop
             string logicalFolderNameFrom = string.Empty;
             string logicalFolderName_Archive = string.Empty;
             string filExtension = ".txt";
-            
-            logicalFolderNameFrom = "1_PRD_JLI_C3000InvoiceSend";
-            logicalFolderName_Archive = "1_PRD_JLI_C3000InvoiceSendArchive";
+            DataTable dtCustParmsData = ue_JLI_GetCustParmsInfo("EDI", "OutputDirectory2");
+
+            if(dtCustParmsData.Rows.Count <= 0)
+            {
+                infobar = "Directory Not found ";
+                return 0;
+            }
+
+            foreach (DataRow dr in dtCustParmsData.Rows)
+            {
+                logicalFolderNameFrom = dr.Field<string>("Charfld1");
+                logicalFolderName_Archive = dr.Field<string>("Charfld2");
+            }
+            //logicalFolderNameFrom = "1_PRD_JLI_C3000InvoiceSend";
+            //logicalFolderName_Archive = "1_PRD_JLI_C3000InvoiceSendArchive";
 
             // Get list of files from method
             DataTable files = ue_JLI_GetFileList(logicalFolderNameFrom, filExtension, ref infobar);
