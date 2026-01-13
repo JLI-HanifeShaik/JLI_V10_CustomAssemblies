@@ -118,6 +118,7 @@ namespace ue_JLI_ZeshtIt
             string VendNum = string.Empty;            
             string ReceiptNum = string.Empty;            
             string PONum = string.Empty;
+            string CustNum = string.Empty;
             string idoName = string.Empty;
             string propertyList = string.Empty;
 
@@ -294,7 +295,19 @@ namespace ue_JLI_ZeshtIt
                         propertyList = "VendNum";
                         filter = string.Format("VendNum = '{0}' ", VendNum);
                     }
-                    //1_W9_OtherDocs
+                    else if (processType == "JL Credit Application")
+                    {
+                        //C000052-20190907
+                        if (fileName.Length >= 7)
+                            CustNum = fileName.Substring(0, 7);
+                        else
+                            continue;
+                        fileDesc = CustNum + " Credit Application Doc Track File";
+                        idoName = "SLCustomers";
+                        propertyList = "CustNum";
+                        filter = string.Format("CustNum = '{0}' ", CustNum);
+                    }
+                    //
                     else if (attachToIDM == 1)
                     {
                         infobar = "Logic not implimented for " + processType;
