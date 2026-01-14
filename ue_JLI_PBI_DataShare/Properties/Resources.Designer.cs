@@ -130,5 +130,89 @@ namespace ue_JLI_PBI_DataShare.Properties {
                 return ResourceManager.GetString("ue_JLI_PBI_CLM_DailyShipSummary", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///--CREATE Proc [dbo].[JLI_JobMatlUsageByShipToSp]
+        ///--As
+        ///Begin
+        ///------------------------------------------------------------------------------------------------------
+        ///--****
+        ///--Truncate Table JLI_JobMatlUsageByShipTo_mst
+        ///--****
+        ///
+        ///Insert Into ue_JLI_JobMatlUsageByShipTo(item
+        ///								,month
+        ///								,year								
+        ///								,cust_num
+        ///								,cust_seq
+        ///								,total_qty
+        ///								,co_num
+        ///								,co_line) 
+        ///								Select jm.item
+        ///		                              ,DATENAME(Month,jm.CreateDate) As Month
+        ///	 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ue_JLI_PBI_JobMatlUsageByShipTo {
+            get {
+                return ResourceManager.GetString("ue_JLI_PBI_JobMatlUsageByShipTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///--CREATE Proc [dbo].[JLI_planningdetailsSp](@ProductCode		nvarchar(20) = Null)
+        ///--As
+        ///Begin
+        ///
+        ///	--DECLARE @Site SiteType
+        ///	--	   ,@Session RowPointertype = NEWID()
+        ///	   
+        ///	--SELECT @Site = site FROM parms_mst
+        ///
+        ///	--EXEC dbo.InitSessionContextSp
+        ///	--  @ContextName = &apos;ContextNameSp&apos;
+        ///	--, @SessionID   = @Session
+        ///	--, @Site        = @Site
+        ///
+        ///   	Declare @planningdetailsTable Table(   
+        ///	  Item				ItemType
+        ///	, OrigQty			decimal(25,10)
+        ///	, DueDate			DateTimeType
+        ///	, RefNum			Varchar(50)
+        ///	, OrdType			Varchar( [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ue_JLI_PBI_PlanningDetail {
+            get {
+                return ResourceManager.GetString("ue_JLI_PBI_PlanningDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to --CREATE PROCEDURE [dbo].[JLI_planningdetailsSp_BGTaskSubmitSp]
+        ///--AS
+        ///Begin
+        /// 
+        ///	--Exec SetSiteSp &apos;JLI&apos;,Null
+        ///	declare   
+        ///	@Severity			int
+        ///	, @BGTaskName		BGTaskNameType
+        ///	, @BGTaskParms		BGTaskParmsType
+        ///	, @BGTaskID			TokenType
+        ///	, @UserName			UserNameType 
+        ///	, @Infobar			InfobarType 
+        ///
+        ///	------------------------------------
+        ///	--Truncate Table ue_JLI_planningdetails
+        ///	Delete From ue_JLI_planningdetails
+        ///	--------------------------------
+        ///	--Task Parameters will use the Preferred Input Settings.
+        ///	selec [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ue_JLI_PBI_PlanningDetail_BGTaskSubmit {
+            get {
+                return ResourceManager.GetString("ue_JLI_PBI_PlanningDetail_BGTaskSubmit", resourceCulture);
+            }
+        }
     }
 }

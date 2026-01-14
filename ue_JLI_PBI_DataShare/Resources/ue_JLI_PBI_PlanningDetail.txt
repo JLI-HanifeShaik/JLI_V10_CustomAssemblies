@@ -1,0 +1,179 @@
+
+--CREATE Proc [dbo].[JLI_planningdetailsSp](@ProductCode		nvarchar(20) = Null)
+--As
+Begin
+
+	--DECLARE @Site SiteType
+	--	   ,@Session RowPointertype = NEWID()
+	   
+	--SELECT @Site = site FROM parms_mst
+
+	--EXEC dbo.InitSessionContextSp
+	--  @ContextName = 'ContextNameSp'
+	--, @SessionID   = @Session
+	--, @Site        = @Site
+
+   	Declare @planningdetailsTable Table(   
+	  Item				ItemType
+	, OrigQty			decimal(25,10)
+	, DueDate			DateTimeType
+	, RefNum			Varchar(50)
+	, OrdType			Varchar(1)
+	, RowPointer        RowPointerType
+	, OrderItem			ItemType
+	)
+	DECLARE @Item				ItemType
+	    , @OrigQty			decimal(25,10)
+	    , @DueDate			DateTimeType
+		, @RefNum			    Varchar(50)
+		, @RowPointer         RowPointerType
+		, @Whse               WhseType
+
+	If @ProductCode = 'ExtraItems' 
+	Begin
+		DECLARE cursor_JobItems CURSOR FOR 
+		Select item.item
+		From item_mst item Inner Join ue_JLI_ItemComponents ItemComponents On ItemComponents.Item = item.item
+		where item.stat='A' 	
+		  and item.item Not In ('FAB100002','FAB100003','FAB100010')
+		  and LEFT(item.item,5)<>'FAB_G'
+		  order by item ASC
+	End
+	Else
+	Begin
+		DECLARE cursor_JobItems CURSOR FOR 
+		Select item
+		From item_mst
+		where stat='A' 	
+		  and item Not In ('FAB100002','FAB100003','FAB100010')
+		  and Product_code = @ProductCode
+		  and LEFT(item,5)<>'FAB_G'
+		  order by item ASC
+	End
+
+	--DECLARE cursor_JobItems CURSOR FOR 
+	--Select item
+	--From item_mst
+	--where stat='A' 	
+	--  and item Not In ('FAB100002','FAB100003','FAB100010')
+	--  and Product_code = @ProductCode
+	--  and LEFT(item,5)<>'FAB_G'
+	--  order by item ASC
+	OPEN cursor_JobItems;
+	FETCH NEXT FROM cursor_JobItems INTO @Item
+	WHILE @@FETCH_STATUS = 0
+		BEGIN
+			-------------------------------------------------------
+			Insert Into @planningdetailsTable(
+									Item	
+								, OrigQty
+								, DueDate 
+								, RefNum
+								, OrdType
+								, RowPointer
+								, OrderItem
+								)select itm.item
+										,pdv.OrigQty
+										,pdv.DueDate
+										,Case When pdv.OrdType='J' Or pdv.OrdType='P'
+												Then pdv.RefNum
+												Else 
+												Case When SUBSTRING(pdv.APSRef,1,2)='CO' Then 
+												SUBSTRING(pdv.APSRef,4,CHARINDEX('-',pdv.APSRef)-4)
+													 Else ''
+												End
+										End
+										,pdv.OrdType
+										,pdv.RowPointer
+										,pdv.Parent
+									from PlanningDetailsView pdv Inner Join item_mst itm 
+									On pdv.item = itm.item
+									where itm.item=@Item
+									  And itm.stat='A' 
+									  --And (pdv.OrigQty Not In (0.003000000,0.000200000,0.000300000,0.001000000,0.005000000) And Left(@Item,3) = 'FAB')
+			-------------------------------------------------------
+			FETCH NEXT FROM cursor_JobItems INTO @Item
+		END;
+	CLOSE cursor_JobItems;
+	DEALLOCATE cursor_JobItems;
+
+Delete From @planningdetailsTable Where OrigQty In (0.003000000,0.000200000,0.000300000,0.001000000,0.005000000) And Left(Item,3) = 'FAB'
+								 
+--Test 
+--Select pdt.*,job.whse From @planningdetailsTable pdt Inner Join job_mst job On pdt.OrdType='J'
+--																		   And pdt.RefNum=job.job
+--Select pdt.*,coi.whse From @planningdetailsTable pdt Inner Join coitem_mst coi On pdt.OrdType='N'
+--																		   And pdt.RefNum=coi.co_num
+--Select pdt.*,poi.whse From @planningdetailsTable pdt Inner Join poitem_mst poi On pdt.OrdType='P'
+--																		   And pdt.RefNum=poi.po_num
+
+-----------------------------------------------------------------------------------------
+--Truncate Table ue_JLI_planningdetails
+------------------------------------------------------------------------------------------
+insert Into ue_JLI_planningdetails( item
+								    ,orig_qty
+									,duedate
+									,ref_num
+									,RefRowPointer
+									,whse
+									,cust_num
+									,cust_seq
+									,order_item
+									,lead_time_due_date
+									) Select pdt.Item
+									             ,pdt.OrigQty
+												 ,pdt.DueDate
+												 ,pdt.RefNum
+												 ,pdt.RowPointer
+												 ,job.whse 
+												 ,co.cust_num
+												 ,co.cust_seq
+												 ,IsNull(pdt.OrderItem,'')
+												 ,Cast(coi.Uf_LTDueDate As Date)
+                                           From @planningdetailsTable pdt 
+										   Inner Join job_mst job On pdt.OrdType='J' 
+										                         And pdt.RefNum=job.job
+										   Inner Join coitem_mst coi On coi.ref_num = job.job
+										   Inner Join co_mst co On co.co_num = coi.co_num
+--------------------------------------------------------------------------------------------
+insert Into ue_JLI_planningdetails( item
+								    ,orig_qty
+									,duedate
+									,ref_num
+									,RefRowPointer
+									,whse
+									,co.cust_num
+									,co.cust_seq
+									,order_item)Select pdt.Item
+									             ,pdt.OrigQty
+												 ,pdt.DueDate
+												 ,pdt.RefNum
+												 ,pdt.RowPointer
+												 ,co.whse 
+												 ,co.cust_num
+												 ,co.cust_seq
+												 ,IsNull(pdt.OrderItem,'')
+										  From @planningdetailsTable pdt Inner Join co_mst co 
+										  On pdt.OrdType='N' And pdt.RefNum=co.co_num
+-----------------------------------------------------------------------------------------------
+insert Into ue_JLI_planningdetails( item
+								    ,orig_qty
+									,duedate
+									,ref_num
+									,RefRowPointer
+									,whse
+									,order_item)Select pdt.Item
+									             ,pdt.OrigQty
+												 ,pdt.DueDate
+												 ,pdt.RefNum
+												 ,pdt.RowPointer
+												 ,po.whse 
+												 ,IsNull(pdt.OrderItem,'')
+		                                  From @planningdetailsTable pdt Inner Join po_mst po 
+										  On pdt.OrdType='P' And pdt.RefNum=po.po_num
+---------------------------------------------------------------------------------------------
+
+End
+
+
+

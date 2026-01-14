@@ -1,0 +1,43 @@
+
+--CREATE Proc [dbo].[JLI_JobMatlUsageByShipToSp]
+--As
+Begin
+------------------------------------------------------------------------------------------------------
+--****
+--Truncate Table JLI_JobMatlUsageByShipTo_mst
+--****
+
+Insert Into ue_JLI_JobMatlUsageByShipTo(item
+								,month
+								,year								
+								,cust_num
+								,cust_seq
+								,total_qty
+								,co_num
+								,co_line) 
+								Select jm.item
+		                              ,DATENAME(Month,jm.CreateDate) As Month
+									  ,DATENAME(Year,jm.CreateDate) As Year
+									  ,co.cust_num
+									  ,co.cust_seq
+									  ,SUM(jm.matl_qty) As Total_Matl_Qty
+									  ,coi.co_num
+									  ,coi.co_line
+								From jobmatl_mst jm Inner Join Job_mst job On jm.job = job.job 
+								                           and jm.suffix = job.suffix
+													Inner Join coitem_mst coi On coi.ref_num = job.job
+													Inner Join co_mst co On co.co_num = coi.co_num
+								Where  jm.CreateDate = Cast(GetDate()-1 As Date)
+								   --And jm.item = 'FAB200497'
+							    Group By jm.item
+									    ,DATENAME(month,jm.CreateDate)
+										,DATENAME(year,jm.CreateDate)
+										,co.cust_num
+										,co.cust_seq
+										,coi.co_num
+									    ,coi.co_line
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+End

@@ -73,5 +73,14 @@
   <ItemGroup>
     <None Include="Resources\ue_JLI_PBI_CLM_DailyShipByCustNum.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ue_JLI_PBI_PlanningDetail.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ue_JLI_PBI_PlanningDetail_BGTaskSubmit.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ue_JLI_PBI_JobMatlUsageByShipTo.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

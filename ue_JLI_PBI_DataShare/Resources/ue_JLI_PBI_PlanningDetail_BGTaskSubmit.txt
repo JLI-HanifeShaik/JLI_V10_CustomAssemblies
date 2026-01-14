@@ -1,0 +1,62 @@
+--CREATE PROCEDURE [dbo].[JLI_planningdetailsSp_BGTaskSubmitSp]
+--AS
+Begin
+ 
+	--Exec SetSiteSp 'JLI',Null
+	declare   
+	@Severity			int
+	, @BGTaskName		BGTaskNameType
+	, @BGTaskParms		BGTaskParmsType
+	, @BGTaskID			TokenType
+	, @UserName			UserNameType 
+	, @Infobar			InfobarType 
+
+	------------------------------------
+	--Truncate Table ue_JLI_planningdetails
+	Delete From ue_JLI_planningdetails
+	--------------------------------
+	--Task Parameters will use the Preferred Input Settings.
+	select @Severity = 0, @UserName = dbo.UserNameSp()
+
+	set @BGTaskName	 = 'ue_JLI_PBI_PlanningDetailDataInsert'
+	DECLARE @ProductCode ProductCodeType = Null
+
+	DECLARE cursor_product CURSOR
+	FOR Select Distinct Product_code From item Where Product_code In ('FAST','UPHY','PLANT','PILW','MECH','LUMB','FOAM','CASG','SPRG','MCOM','WCOM','LEAT','FABR','FIBR')
+		Union All
+		Select 'ExtraItems'
+	OPEN cursor_product;
+	FETCH NEXT FROM cursor_product INTO @ProductCode
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		--------------------------------
+		Set @BGTaskParms = Concat(@ProductCode,',','MESSAGE')
+
+		--Drop Task and capture BGTaskId.
+		exec dbo.BGTaskSubmitSp
+		  @TaskName        = @BGTaskName
+		, @TaskParms1      = @BGTaskParms
+		, @TaskParms2      = NULL
+		, @Infobar         = @Infobar   OUTPUT
+		, @TaskID          = @BGTaskID  OUTPUT
+		, @TaskStatusCode  = 'READY'
+		, @StringTable     = NULL
+		, @RequestingUser  = @UserName 
+
+		--Print @BGTaskID
+		--------------------------------------
+	FETCH NEXT FROM cursor_product INTO @ProductCode
+	END;
+	CLOSE cursor_product;
+	DEALLOCATE cursor_product;	 
+
+	--Returning Zero regardless of Success. 
+	--return 
+
+
+ End
+
+
+
+

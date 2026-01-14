@@ -15,3 +15,17 @@ C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_PBI_DataShare\obj\Release\ue_
 C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.pdb
 C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.Properties.Resources.resources
 C:\Hanife\JL Custom Assemblies V10\Projects\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.csproj.GenerateResource.cache
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\bin\Release\ue_JLI_PBI_DataShare.dll
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\bin\Release\ue_JLI_PBI_DataShare.pdb
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\bin\Release\IDOProtocol.dll
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\bin\Release\MGSharedResources.dll
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\bin\Release\Newtonsoft.Json.dll
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\bin\Release\WSFormServerProtocol.dll
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\bin\Release\WSEnums.dll
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.csproj.AssemblyReference.cache
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.Properties.Resources.resources
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.csproj.GenerateResource.cache
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.csproj.CoreCompileInputs.cache
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.csproj.CopyComplete
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.dll
+C:\Hanife\JLI V10 Custom Assemblies-1201\ue_JLI_PBI_DataShare\obj\Release\ue_JLI_PBI_DataShare.pdb
